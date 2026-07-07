@@ -102,6 +102,15 @@ test("display_errors forced on is flagged", () => {
   assert.ok(findings.some(f => f.id === "display-errors"));
 });
 
+test("sample-file DB placeholders are recognized", () => {
+  const cfg = `<?php
+define( 'DB_NAME', 'database_name_here' );
+define( 'DB_USER', 'username_here' );
+define( 'DB_PASSWORD', 'password_here' );`;
+  const { findings } = audit(cfg);
+  assert.ok(findings.some(f => f.id === "db-sample"));
+});
+
 test("non-config input returns a friendly note", () => {
   const { findings, score } = audit("just some random text");
   assert.equal(score, null);

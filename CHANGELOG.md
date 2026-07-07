@@ -3,6 +3,12 @@
 All notable changes to this project are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Added
+
+- The audit now recognizes the wp-config-sample.php database placeholders and notes that the pasted file looks unconfigured.
+
 ## [1.0.1] - 2026-07-07
 
 ### Fixed

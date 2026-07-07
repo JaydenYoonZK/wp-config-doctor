@@ -199,6 +199,14 @@ export function audit(src) {
   }
 
   /* --- db password --- */
+  const dbSample = ["DB_NAME", "DB_USER", "DB_PASSWORD"].some(k => {
+    const d = get(k);
+    return d && d.type === "string" && /^(database_name_here|username_here|password_here)$/.test(d.value);
+  });
+  if (dbSample) {
+    add("db-sample", "info", "This looks like the unconfigured sample file",
+      "The database settings still hold the wp-config-sample.php placeholders. The rest of the audit applies, but paste your real wp-config.php for a meaningful result.");
+  }
   const pw = get("DB_PASSWORD");
   if (pw && pw.type === "string" && pw.value === "") {
     add("db-empty", "high", "The database password is empty",
