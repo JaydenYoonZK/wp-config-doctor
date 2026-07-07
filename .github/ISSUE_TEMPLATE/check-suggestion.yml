@@ -1,0 +1,19 @@
+name: Suggest a hardening check
+description: A wp-config.php setting the audit should check for.
+title: "[check]: "
+labels: ["enhancement"]
+body:
+  - type: input
+    id: constant
+    attributes:
+      label: Constant or pattern
+      placeholder: e.g. DISALLOW_UNFILTERED_HTML
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why it matters
+      description: The risk it addresses, and a source (vendor doc or hardening guide) if you have one.
+    validations:
+      required: true

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WP Config Doctor: audit and harden your wp-config.php</title>
+  <meta name="description" content="Paste your wp-config.php and get a security and performance audit: debug mode, table prefix, missing or placeholder salts, and hardening constants. Plus a fresh salt generator. Runs in your browser.">
+  <link rel="canonical" href="https://jaydenyoonzk.github.io/wp-config-doctor/">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230d0c0a'/%3E%3Ctext x='32' y='44' text-anchor='middle' font-size='34' fill='%23abcf37'%3E%2B%3C/text%3E%3C/svg%3E">
+  <meta property="og:title" content="WP Config Doctor: audit and harden your wp-config.php">
+  <meta property="og:description" content="A security and performance audit for your wp-config.php, plus a fresh salt generator. Nothing leaves your browser.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://jaydenyoonzk.github.io/wp-config-doctor/">
+  <meta property="og:image" content="https://jaydenyoonzk.github.io/wp-config-doctor/assets/preview.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://jaydenyoonzk.github.io/wp-config-doctor/assets/preview.png">
+  <script>
+    (function () {
+      var t = new URLSearchParams(location.search).get("theme") || localStorage.getItem("theme");
+      if (t !== "light" && t !== "dark") t = matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+      document.documentElement.dataset.theme = t;
+    })();
+  </script>
+  <link rel="stylesheet" href="styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "WP Config Doctor",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any (browser-based)",
+    "url": "https://jaydenyoonzk.github.io/wp-config-doctor/",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "author": { "@type": "Person", "name": "Jayden Yoon ZK", "url": "https://github.com/JaydenYoonZK" }
+  }
+  </script>
+</head>
+<body>
+
+<div class="bg-scene" aria-hidden="true">
+  <div class="orb orb-a"></div>
+  <div class="orb orb-b"></div>
+  <div class="star-layer sl-far">
+    <span class="star" style="left:12%;top:18%;animation-delay:-1.4s"></span>
+    <span class="star" style="left:38%;top:8%;animation-delay:-3.8s;animation-duration:8.6s"></span>
+    <span class="star" style="left:63%;top:14%;animation-delay:-5.6s"></span>
+    <span class="star" style="left:87%;top:22%;animation-delay:-2.3s;animation-duration:9.2s"></span>
+    <span class="star" style="left:22%;top:60%;animation-delay:-6.7s"></span>
+    <span class="star" style="left:74%;top:70%;animation-delay:-0.9s;animation-duration:8s"></span>
+  </div>
+  <div class="star-layer sl-mid">
+    <span class="star" style="left:8%;top:34%;animation-delay:-4.5s"></span>
+    <span class="star" style="left:47%;top:24%;animation-delay:-3.1s;animation-duration:7.8s"></span>
+    <span class="star" style="left:92%;top:47%;animation-delay:-1.8s"></span>
+    <span class="star" style="left:30%;top:86%;animation-delay:-5.9s;animation-duration:8.8s"></span>
+    <span class="star" style="left:61%;top:94%;animation-delay:-2.7s"></span>
+  </div>
+  <div class="star-layer sl-near">
+    <span class="star" style="left:5%;top:52%;animation-delay:-3.4s;animation-duration:7.4s"></span>
+    <span class="star" style="left:95%;top:31%;animation-delay:-6.2s"></span>
+    <span class="star" style="left:17%;top:116%;animation-delay:-1.2s;animation-duration:8.2s"></span>
+    <span class="star" style="left:84%;top:128%;animation-delay:-4.9s"></span>
+  </div>
+  <div class="shape cube3d p1"><div class="dx"><div class="dy"><div class="inner"><div class="f"></div><div class="f"></div><div class="f"></div><div class="f"></div><div class="f"></div><div class="f"></div></div></div></div></div>
+  <div class="shape cube3d p2"><div class="dx"><div class="dy"><div class="inner"><div class="f"></div><div class="f"></div><div class="f"></div><div class="f"></div><div class="f"></div><div class="f"></div></div></div></div></div>
+  <div class="shape cube3d p3"><div class="dx"><div class="dy"><div class="inner"><div class="f"></div><div class="f"></div><div class="f"></div><div class="f"></div><div class="f"></div><div class="f"></div></div></div></div></div>
+  <div class="shape sph p4"><div class="dx"><div class="dy"><div class="inner"></div></div></div></div>
+  <div class="shape sph p5"><div class="dx"><div class="dy"><div class="inner"></div></div></div></div>
+  <div class="shape cube3d p6"><div class="dx"><div class="dy"><div class="inner"><div class="f"></div><div class="f"></div><div class="f"></div><div class="f"></div><div class="f"></div><div class="f"></div></div></div></div></div>
+  <div class="shape sph p7"><div class="dx"><div class="dy"><div class="inner"></div></div></div></div>
+  <div class="shape sph p10"><div class="dx"><div class="dy"><div class="inner"></div></div></div></div>
+  <div class="shape sph p11"><div class="dx"><div class="dy"><div class="inner"></div></div></div></div>
+  <div class="shape cube3d p8"><div class="dx"><div class="dy"><div class="inner"><div class="f"></div><div class="f"></div><div class="f"></div><div class="f"></div><div class="f"></div><div class="f"></div></div></div></div></div>
+  <div class="shape cube3d p9"><div class="dx"><div class="dy"><div class="inner"><div class="f"></div><div class="f"></div><div class="f"></div><div class="f"></div><div class="f"></div><div class="f"></div></div></div></div></div>
+</div>
+
+<nav class="site-nav" aria-label="Page navigation">
+  <div class="wrap">
+    <a class="brand" href="#top">Jayden Yoon ZK</a>
+    <div class="nav-links">
+      <a href="#salts">Salt generator</a>
+      <a href="#checks">What it checks</a>
+      <a href="#privacy">Privacy</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle light and dark mode">☀️</button>
+  </div>
+</nav>
+
+<header id="top">
+  <div class="wrap header-grid">
+    <div class="header-copy">
+    <p class="eyebrow">WP Config Doctor</p>
+    <h1>Is your wp-config.php actually hardened?</h1>
+    <p class="lede">The single most important file in a WordPress install is also the one most people set up once and never revisit. Debug mode left on, the sample salts never replaced, the default table prefix, no lockdown on the file editor. Paste your wp-config.php for a plain-language security and performance audit, and generate fresh salts while you are here.</p>
+    <p class="privacy"><span class="dot"></span> 🔒 Your config, including database credentials, is read in your browser and never sent anywhere.</p>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+<svg viewBox="0 0 320 270" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <defs><radialGradient id="hg" cx="0.2" cy="0" r="1"><stop offset="0" stop-color="#abcf37" stop-opacity="0.1"/><stop offset="1" stop-color="#abcf37" stop-opacity="0"/></radialGradient></defs>
+  <rect x="4" y="4" width="312" height="262" rx="24" fill="#16140f" stroke="#ffffff" stroke-opacity="0.12"/>
+  <rect x="4" y="4" width="312" height="262" rx="24" fill="url(#hg)"/>
+  <circle cx="28" cy="28" r="4" fill="#ffffff" fill-opacity="0.14"/><circle cx="43" cy="28" r="4" fill="#ffffff" fill-opacity="0.14"/><circle cx="58" cy="28" r="4" fill="#ffffff" fill-opacity="0.14"/>
+  <text x="270" y="33" text-anchor="end" font-family="ui-monospace, Menlo, monospace" font-size="11" fill="#8f887c">wp-config.php</text>
+  <path d="M4 48H316" stroke="#ffffff" stroke-opacity="0.08"/>
+  <!-- shield -->
+  <path d="M62 66l30 10v26c0 20-15 30-30 36-15-6-30-16-30-36V76z" fill="#abcf37" fill-opacity="0.08" stroke="#abcf37" stroke-opacity="0.4" stroke-width="2"/>
+  <path d="M50 104l9 9l16-18" stroke="#abcf37" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <animate attributeName="opacity" values="1;0.5;1" dur="3.4s" repeatCount="indefinite"/></path>
+  <!-- findings list -->
+  <g font-family="ui-monospace, Menlo, monospace" font-size="11">
+    <rect x="120" y="72" width="10" height="10" rx="3" fill="#ff7a6e"/><text x="138" y="81" fill="#c8c2b6">WP_DEBUG on</text>
+    <rect x="120" y="94" width="10" height="10" rx="3" fill="#ffc65c"/><text x="138" y="103" fill="#c8c2b6">prefix wp_</text>
+    <rect x="120" y="116" width="10" height="10" rx="3" fill="#ff7a6e"/><text x="138" y="125" fill="#c8c2b6">sample salts</text>
+    <rect x="120" y="138" width="10" height="10" rx="3" fill="#a7e26a"/><text x="138" y="147" fill="#c8c2b6">SSL admin</text>
+  </g>
+  <!-- score dial -->
+  <circle cx="72" cy="212" r="30" stroke="#ffffff" stroke-opacity="0.1" stroke-width="6" fill="none"/>
+  <circle cx="72" cy="212" r="30" stroke="#ffc65c" stroke-width="6" fill="none" stroke-linecap="round" stroke-dasharray="188" stroke-dashoffset="80" transform="rotate(-90 72 212)">
+    <animate attributeName="stroke-dashoffset" values="188;80" dur="1.4s" fill="freeze"/></circle>
+  <text x="72" y="218" text-anchor="middle" fill="#f3f0e9" font-size="22" font-weight="800" font-family="ui-sans-serif, system-ui, sans-serif">58</text>
+  <text x="120" y="200" fill="#8f887c" font-size="12" font-family="ui-sans-serif, system-ui, sans-serif">4 issues found,</text>
+  <text x="120" y="218" fill="#8f887c" font-size="12" font-family="ui-sans-serif, system-ui, sans-serif">each with a fix</text>
+</svg>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="card">
+    <label for="input" style="display:none">wp-config.php contents</label>
+    <textarea id="input" placeholder="Paste the contents of your wp-config.php here..." spellcheck="false" style="min-height:170px; font-family: var(--mono); font-size: 0.88rem;"></textarea>
+    <div class="toolbar">
+      <button id="audit" class="primary" type="button">Audit</button>
+      <button id="paste" type="button">Paste &amp; audit</button>
+      <button id="sample" type="button">Try a sample</button>
+      <button id="clear" type="button">Clear</button>
+    </div>
+  </div>
+
+  <div id="results" hidden>
+    <div class="score-row" id="score-row"></div>
+    <div id="findings"></div>
+  </div>
+
+  <h2 class="section-title" id="salts">🧂 Fresh salt generator</h2>
+  <p class="section-sub">Eight new 64-character keys, generated in your browser with the Web Crypto API. Safe to paste straight into wp-config.php, replacing your existing key block. Regenerating logs everyone out, which is a fast way to end any hijacked sessions.</p>
+  <div class="card">
+    <div class="output">
+      <div class="copy-wrap"><button id="copy-salts" class="primary" type="button">Copy</button></div>
+      <pre class="snippet" id="salts"></pre>
+    </div>
+    <div class="toolbar"><button id="regen" type="button">Generate a new set</button></div>
+  </div>
+
+  <div class="prose">
+    <h2 id="checks">🔎 What it checks</h2>
+    <p>Every finding is ranked by severity and comes with the exact line to add or change. The checks, roughly from most to least urgent:</p>
+    <ul>
+      <li><strong>Security keys and salts</strong>: all eight present, none still holding the sample placeholder, none duplicated, none suspiciously short.</li>
+      <li><strong>Debug exposure</strong>: <code>WP_DEBUG</code> and <code>WP_DEBUG_DISPLAY</code>, plus a forced <code>ini_set('display_errors', 1)</code>, any of which can print server paths and errors to visitors.</li>
+      <li><strong>Database credentials</strong>: an empty or default password (checked locally, never shown or sent).</li>
+      <li><strong>File editing</strong>: <code>DISALLOW_FILE_EDIT</code>, which stops a compromised admin account from editing PHP in the dashboard.</li>
+      <li><strong>Transport</strong>: <code>FORCE_SSL_ADMIN</code> for encrypted logins.</li>
+      <li><strong>Table prefix</strong>: whether it is still the default <code>wp_</code>.</li>
+      <li><strong>Hardening and performance extras</strong>: automatic updates, debug log location, environment type, post revisions, memory limit.</li>
+    </ul>
+
+    <h2 id="privacy">🔒 Why pasting your config here is safe</h2>
+    <p>wp-config.php contains your database password, so where you paste it matters. This tool is a static page: the audit runs entirely in your browser with JavaScript, there are no network requests after the page loads, and nothing is stored. Your password is used only to check whether it is empty or a common default, and it is never displayed back or transmitted. You can open the browser network tab to confirm nothing leaves, or read the small <a href="https://github.com/JaydenYoonZK/wp-config-doctor/blob/main/docs/config.js">engine</a>. If you would still rather not, redact the four <code>DB_</code> lines before pasting; the rest of the audit works fine without them.</p>
+
+    <h2 id="faq">💬 Questions people ask</h2>
+    <h3>Should I really change the table prefix?</h3>
+    <p>On a new install, yes, pick something non-default. On a live site, changing it means renaming database tables and updating references, which is risky to do casually. The audit flags <code>wp_</code> as low severity for exactly this reason: it is obscurity, not a real defense, so do not break a working site chasing it.</p>
+    <h3>How often should I rotate salts?</h3>
+    <p>A few times a year is plenty, and any time you suspect a compromise. Rotating them invalidates every logged-in session immediately, which is the quickest way to kick out an attacker who has a stolen cookie.</p>
+    <h3>Does a high score mean my site is secure?</h3>
+    <p>No. This audits one file. Real security also depends on updates, strong passwords, hosting, plugins, and more. A clean wp-config.php removes a set of common, avoidable mistakes; it is a floor, not a ceiling.</p>
+    <h3>Can I use the audit rules in my own tooling?</h3>
+    <p>Yes. <code>docs/config.js</code> is a dependency-free ES module exposing <code>parseConfig</code>, <code>audit</code>, and <code>generateSalts</code>. MIT licensed.</p>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Built by <a href="https://github.com/JaydenYoonZK">Jayden Yoon ZK</a></span>
+    <a href="https://github.com/JaydenYoonZK/wp-config-doctor">Source on GitHub</a>
+    <a href="https://github.com/JaydenYoonZK/wp-config-doctor/issues">Report an issue</a>
+    <a href="https://jaydenyoonzk.github.io/wp-serial-fix/">WP Serial Fix</a>
+    <a href="https://jaydenyoonzk.github.io/wp-plugin-checkup/">WP Plugin Checkup</a>
+    <span>MIT License</span>
+  </div>
+</footer>
+
+<button id="to-top" class="to-top" type="button" aria-label="Back to top">&#8593;</button>
+<script type="module" src="app.js"></script>
+</body>
+</html>

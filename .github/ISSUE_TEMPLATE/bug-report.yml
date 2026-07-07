@@ -1,0 +1,12 @@
+name: Bug report
+description: A parsing problem or broken UI.
+title: "[bug]: "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: A minimal wp-config.php snippet (redact real credentials), what the audit said, and what you expected.
+    validations:
+      required: true
