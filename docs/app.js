@@ -104,10 +104,10 @@ pasteBtn.addEventListener("click", async () => {
 $("clear").addEventListener("click", () => { input.value = ""; results.hidden = true; input.focus(); });
 
 // Salt generator
-function newSalts() { $("salts").textContent = generateSalts(); }
+function newSalts() { $("salt-output").textContent = generateSalts(); }
 $("regen").addEventListener("click", newSalts);
 $("copy-salts").addEventListener("click", async () => {
-  try { await navigator.clipboard.writeText($("salts").textContent); } catch { /* ignore */ }
+  try { await navigator.clipboard.writeText($("salt-output").textContent); } catch { /* ignore */ }
   const b = $("copy-salts"); b.textContent = "Copied ✓";
   setTimeout(() => { b.textContent = "Copy"; }, 1500);
 });
