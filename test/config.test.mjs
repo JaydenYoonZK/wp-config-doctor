@@ -35,6 +35,10 @@ define( 'FORCE_SSL_ADMIN', true );
 define( 'WP_MEMORY_LIMIT', '256M' );
 define( 'WP_POST_REVISIONS', 10 );
 define( 'WP_ENVIRONMENT_TYPE', 'production' );
+define( 'WP_POST_REVISIONS', 10 );
+define( 'WP_ENVIRONMENT_TYPE', 'production' );
+define( 'DISALLOW_UNFILTERED_HTML', true );
+$table_prefix = 'x7z_';
 $table_prefix = 'x7z_';
 `;
 
@@ -100,6 +104,16 @@ test("display_errors forced on is flagged", () => {
   const cfg = `<?php ini_set('display_errors', 1); define('WP_DEBUG', false);`;
   const { findings } = audit(cfg);
   assert.ok(findings.some(f => f.id === "display-errors"));
+});
+
+test("missing DISALLOW_UNFILTERED_HTML is flagged", () => {
+  const { findings } = audit("<?php define('WP_DEBUG', false);");
+  assert.ok(findings.some(f => f.id === "unfiltered-html"));
+});
+
+test("DISALLOW_UNFILTERED_HTML true passes clean", () => {
+  const { findings } = audit("<?php define('DISALLOW_UNFILTERED_HTML', true);");
+  assert.ok(findings.some(f => f.id === "unfiltered-html-ok"));
 });
 
 test("sample-file DB placeholders are recognized", () => {
