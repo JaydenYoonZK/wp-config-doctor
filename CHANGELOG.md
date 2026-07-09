@@ -3,11 +3,19 @@
 All notable changes to this project are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased]
+## [1.1.0] - 2026-07-09
+
+### Fixed
+
+- Commented-out `define()` lines are no longer audited as if they were active. A commented `// define('WP_DEBUG', true);` no longer raises a false "WP_DEBUG is on" alarm, and a commented `/* define('DISALLOW_FILE_EDIT', true); */` is now correctly reported as still enabled instead of passing (which was a false sense of security). The comment stripping is string-aware, so a salt containing `/`, `*`, or `#` is preserved intact.
 
 ### Added
 
 - The audit now recognizes the wp-config-sample.php database placeholders and notes that the pasted file looks unconfigured.
+
+### Changed
+
+- The Paste button is always the green primary action and replaces the box in one click.
 
 ## [1.0.1] - 2026-07-07
 

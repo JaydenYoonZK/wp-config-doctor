@@ -65,7 +65,7 @@ const freshSalts = generateSalts();   // eight define() lines
 npm test
 ```
 
-10 tests cover the parser (including salts that contain parentheses and quotes), the audit rules against hardened and insecure fixtures, duplicate-salt detection, and the salt generator.
+15 tests cover the parser (including salts that contain parentheses and quotes), string-aware comment stripping so commented-out defines are not audited as active, the audit rules against hardened and insecure fixtures, duplicate-salt detection, and the salt generator.
 
 ## License
 

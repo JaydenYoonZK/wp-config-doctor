@@ -43,10 +43,49 @@ function readPhpString(src, i) {
 }
 
 /**
- * Parse wp-config.php text.
- * Returns { defines: Map<name,{value,type,raw,line}>, tablePrefix, hasCode }.
+ * Blank out PHP comments (// , # , and block) while leaving strings and the
+ * character positions intact, so a commented-out define() is not audited as if
+ * it were active. String-aware, because a salt can legitimately contain /, *,
+ * or #. Comment characters become spaces; newlines are preserved so reported
+ * line numbers stay correct.
  */
-export function parseConfig(src) {
+export function stripComments(src) {
+  let out = "";
+  let i = 0;
+  const n = src.length;
+  while (i < n) {
+    const c = src[i];
+    if (c === "'" || c === '"') {                 // copy a quoted string verbatim
+      out += c; i++;
+      while (i < n) {
+        if (src[i] === "\\") { out += src[i] + (src[i + 1] ?? ""); i += 2; continue; }
+        out += src[i];
+        const done = src[i] === c;
+        i++;
+        if (done) break;
+      }
+      continue;
+    }
+    if ((c === "/" && src[i + 1] === "/") || c === "#") {   // line comment
+      while (i < n && src[i] !== "\n") { out += " "; i++; }
+      continue;
+    }
+    if (c === "/" && src[i + 1] === "*") {                   // block comment
+      while (i < n && !(src[i] === "*" && src[i + 1] === "/")) { out += src[i] === "\n" ? "\n" : " "; i++; }
+      if (i < n) { out += "  "; i += 2; }
+      continue;
+    }
+    out += c; i++;
+  }
+  return out;
+}
+
+/**
+ * Parse wp-config.php text.
+ * Returns { defines: Map<name,{value,type,raw,line}>, tablePrefix, hasCode, clean }.
+ */
+export function parseConfig(rawSrc) {
+  const src = stripComments(rawSrc);
   const defines = new Map();
   let tablePrefix = null;
 
@@ -84,7 +123,7 @@ export function parseConfig(src) {
   const pm = /\$table_prefix\s*=\s*(['"])(.*?)\1/.exec(src);
   if (pm) tablePrefix = pm[2];
 
-  return { defines, tablePrefix, hasCode: /<\?php|define\s*\(|\$table_prefix/.test(src) };
+  return { defines, tablePrefix, hasCode: /<\?php|define\s*\(|\$table_prefix/.test(src), clean: src };
 }
 
 /* ------------------------------- audit ------------------------------- */
@@ -102,7 +141,7 @@ function truthy(def) {
  * Each finding: { id, title, level, detail, fix? }
  */
 export function audit(src) {
-  const { defines, tablePrefix, hasCode } = parseConfig(src);
+  const { defines, tablePrefix, hasCode, clean } = parseConfig(src);
   const F = [];
   const get = (k) => defines.get(k);
   const add = (id, level, title, detail, fix) => F.push({ id, level, title, detail, fix });
@@ -165,7 +204,7 @@ export function audit(src) {
   } else if (dbg && dbg.type === "bool") {
     add("wp-debug-ok", "pass", "WP_DEBUG is off", "Good for production.");
   }
-  if (/ini_set\s*\(\s*['"]display_errors['"]\s*,\s*['"]?(1|on|true)/i.test(src)) {
+  if (/ini_set\s*\(\s*['"]display_errors['"]\s*,\s*['"]?(1|on|true)/i.test(clean)) {
     add("display-errors", "high", "display_errors is forced on",
       "An ini_set('display_errors', ...) call is exposing PHP errors regardless of WordPress settings.",
       "Remove it or set it to 0 in production.");

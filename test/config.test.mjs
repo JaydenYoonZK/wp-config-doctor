@@ -143,3 +143,31 @@ test("generated salts survive a round-trip parse", () => {
   const { findings } = audit(cfg);
   assert.ok(findings.some(f => f.id === "salts-ok"));
 });
+
+test("ignores commented-out defines (no false WP_DEBUG alarm)", () => {
+  const cfg = `<?php
+// define( 'WP_DEBUG', true );   // local only
+define( 'WP_DEBUG', false );
+`;
+  assert.equal(parseConfig(cfg).defines.get("WP_DEBUG").value, false);
+  const ids = audit(cfg).findings.map(f => f.id);
+  assert.ok(!ids.includes("wp-debug"), "a commented-out debug line must not be reported as active");
+});
+
+test("a commented-out hardening define is not counted as set (no false pass)", () => {
+  const cfg = `<?php\n/* define( 'DISALLOW_FILE_EDIT', true ); */\ndefine('DB_NAME','x');\n`;
+  const ids = audit(cfg).findings.map(f => f.id);
+  assert.ok(ids.includes("file-edit"), "must flag file editing as still enabled");
+  assert.ok(!ids.includes("file-edit-ok"), "must not report it as disabled");
+});
+
+test("stripComments preserves salt characters that look like comments", () => {
+  const salt = "ab/*c#d//e" + "x".repeat(54);   // contains /*  #  //  but is one string
+  const cfg = `<?php\ndefine('AUTH_KEY', '${salt}');\n`;
+  assert.equal(parseConfig(cfg).defines.get("AUTH_KEY").value, salt);
+});
+
+test("a # line comment is stripped too", () => {
+  const cfg = `<?php\n# define('FORCE_SSL_ADMIN', true);\ndefine('DB_NAME','x');\n`;
+  assert.ok(audit(cfg).findings.map(f => f.id).includes("ssl-admin"), "hash-commented define must not count as set");
+});
