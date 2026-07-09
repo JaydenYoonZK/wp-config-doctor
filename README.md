@@ -9,7 +9,7 @@ Paste your `wp-config.php` and get a plain-language security and performance aud
 </p>
 
 <a href="https://jaydenyoonzk.github.io/wp-config-doctor/?demo">
-  <img src="docs/assets/preview.png" alt="WP Config Doctor scoring a sample wp-config.php and listing ranked findings, each with the exact line to fix it" width="100%">
+  <img src="docs/assets/preview.png" alt="WP Config Doctor shown in light and dark themes, the hero with its wp-config.php audit illustration scoring findings by severity" width="100%">
 </a>
 
 **[Open the live tool](https://jaydenyoonzk.github.io/wp-config-doctor/)** or **[see it audit a sample](https://jaydenyoonzk.github.io/wp-config-doctor/?demo)**. Nothing is uploaded.
