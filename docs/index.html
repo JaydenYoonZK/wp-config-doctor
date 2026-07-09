@@ -131,10 +131,10 @@
     <label for="input" style="display:none">wp-config.php contents</label>
     <textarea id="input" placeholder="Paste the contents of your wp-config.php here..." spellcheck="false" style="min-height:170px; font-family: var(--mono); font-size: 0.88rem;"></textarea>
     <div class="toolbar">
-      <button id="audit" disabled class="primary" type="button">Audit</button>
-      <button id="paste" type="button">Paste &amp; audit</button>
-      <button id="sample" type="button">Try a sample</button>
-      <button id="clear" disabled type="button">Clear</button>
+      <button id="audit" disabled class="primary" type="button" data-tip="Audit this wp-config.php for security and setup issues" data-tip-off="Paste your wp-config.php first">Audit</button>
+      <button id="paste" type="button" data-tip="Paste your wp-config.php from the clipboard">Paste &amp; audit</button>
+      <button id="sample" type="button" data-tip="Load an example to try it">Try a sample</button>
+      <button id="clear" disabled type="button" data-tip="Clear the box and start over" data-tip-off="Nothing to clear yet">Clear</button>
     </div>
   </div>
 
