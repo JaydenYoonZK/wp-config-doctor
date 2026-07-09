@@ -38,6 +38,18 @@ define( 'WP_ENVIRONMENT_TYPE', 'production' );
 $table_prefix = 'x7z_';
 `;
 
+function deterministicBytes() {
+  let seed = 11;
+  return (n) => {
+    const bytes = new Uint8Array(n);
+    for (let i = 0; i < n; i++) {
+      bytes[i] = (seed + i * 37) % 256;
+    }
+    seed = (seed + 53) % 256;
+    return bytes;
+  };
+}
+
 test("parses defines including strings, bools, ints", () => {
   const { defines, tablePrefix } = parseConfig(SAMPLE_HARDENED);
   assert.equal(defines.get("DB_NAME").value, "wp_prod");
@@ -118,7 +130,7 @@ test("non-config input returns a friendly note", () => {
 });
 
 test("generateSalts produces eight valid, unique, quote-safe lines", () => {
-  const out = generateSalts();
+  const out = generateSalts(deterministicBytes());
   const lines = out.split("\n");
   assert.equal(lines.length, 8);
   const values = [];
@@ -134,7 +146,7 @@ test("generateSalts produces eight valid, unique, quote-safe lines", () => {
 });
 
 test("generated salts survive a round-trip parse", () => {
-  const cfg = "<?php\n" + generateSalts();
+  const cfg = "<?php\n" + generateSalts(deterministicBytes());
   const { defines } = parseConfig(cfg);
   for (const k of SALT_KEYS) {
     assert.equal(defines.get(k).value.length, 64, k);
@@ -202,8 +214,7 @@ test("WP_DEBUG_LOG=true is flagged, a custom path string is not", () => {
 });
 
 test("generated salts never contain a space, quote, or backslash", () => {
-  const bytes = (n) => { const a = new Uint8Array(n); for (let i = 0; i < n; i++) a[i] = (i * 37 + 11) % 256; return a; };
-  const out = generateSalts(bytes);
+  const out = generateSalts(deterministicBytes());
   const values = out.split("\n").map(l => l.match(/'([^']*)'\);$/)?.[1] ?? "");
   for (const v of values) {
     assert.equal(v.length, 64);
