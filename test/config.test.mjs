@@ -204,3 +204,11 @@ test("generated salts never contain a space, quote, or backslash", () => {
     assert.ok(!/[ '\\]/.test(v), `salt must have no space, quote, or backslash: ${JSON.stringify(v)}`);
   }
 });
+
+test("WP_HOME / WP_SITEURL hardcoded to http:// is flagged, https is not", () => {
+  const http = audit(`<?php define('WP_HOME','http://example.com'); define('WP_SITEURL','http://example.com'); define('DB_NAME','x');`).findings.map(f => f.id);
+  assert.ok(http.includes("wp-home-http"));
+  assert.ok(http.includes("wp-siteurl-http"));
+  const https = audit(`<?php define('WP_HOME','https://example.com'); define('DB_NAME','x');`).findings.map(f => f.id);
+  assert.ok(!https.includes("wp-home-http"));
+});

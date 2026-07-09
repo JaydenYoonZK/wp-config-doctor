@@ -27,7 +27,7 @@ Every finding is ranked by severity and comes with the exact line to add or chan
 - **Unauthenticated repair page**: `WP_ALLOW_REPAIR` left enabled
 - **Database credentials**: empty or common-default password (checked locally, never shown or sent)
 - **File editing**: `DISALLOW_FILE_EDIT`
-- **Transport**: `FORCE_SSL_ADMIN`
+- **Transport**: `FORCE_SSL_ADMIN`, and `WP_HOME` / `WP_SITEURL` hardcoded to an insecure `http://` address
 - **Table prefix**: whether it is still the default `wp_`
 - **Hardening and performance extras**: automatic updates, debug log location, environment type, post revisions, memory limit
 
@@ -66,7 +66,7 @@ const freshSalts = generateSalts();   // eight define() lines
 npm test
 ```
 
-20 tests cover the parser (including salts that contain parentheses and quotes), string-aware comment stripping so commented-out defines are not audited as active, PHP string truthiness for `WP_DEBUG`, the `WP_ALLOW_REPAIR` and `WP_DEBUG_LOG` checks, the audit rules against hardened and insecure fixtures, duplicate-salt detection, and the salt generator.
+21 tests cover the parser (including salts that contain parentheses and quotes), string-aware comment stripping so commented-out defines are not audited as active, PHP string truthiness for `WP_DEBUG`, the `WP_ALLOW_REPAIR`, `WP_DEBUG_LOG`, and insecure `WP_HOME` / `WP_SITEURL` checks, the audit rules against hardened and insecure fixtures, duplicate-salt detection, and the salt generator.
 
 ## License
 

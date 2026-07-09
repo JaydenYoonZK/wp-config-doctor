@@ -255,6 +255,19 @@ export function audit(src) {
       "Delete the WP_ALLOW_REPAIR line once the repair is finished.");
   }
 
+  /* --- site URLs hardcoded to insecure http --- */
+  // A complete http:// literal (host and all). A concatenated value like
+  // 'http://' . $host truncates to "http://" with nothing after, which is a
+  // dynamic URL rather than a fixed insecure one, so \S excludes it.
+  for (const key of ["WP_HOME", "WP_SITEURL"]) {
+    const d = get(key);
+    if (d && d.type === "string" && /^http:\/\/\S/.test(d.value)) {
+      add(`${key.toLowerCase().replace(/_/g, "-")}-http`, "medium", `${key} is hardcoded to an insecure http:// address`,
+        `${key} is set to "${d.value}". Pinning it to http forces WordPress to build its links and redirects over plain HTTP, which breaks a site served over HTTPS or triggers mixed-content warnings, and on a site that redirects http to https it can cause a redirect loop.`,
+        `Use https, for example define('${key}', 'https://${d.value.slice("http://".length)}');`);
+    }
+  }
+
   /* --- db password --- */
   const dbSample = ["DB_NAME", "DB_USER", "DB_PASSWORD"].some(k => {
     const d = get(k);
