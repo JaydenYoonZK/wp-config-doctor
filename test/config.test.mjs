@@ -171,3 +171,36 @@ test("a # line comment is stripped too", () => {
   const cfg = `<?php\n# define('FORCE_SSL_ADMIN', true);\ndefine('DB_NAME','x');\n`;
   assert.ok(audit(cfg).findings.map(f => f.id).includes("ssl-admin"), "hash-commented define must not count as set");
 });
+
+test("WP_DEBUG set to a string is flagged (PHP truthiness footgun)", () => {
+  const ids = audit(`<?php define('WP_DEBUG', 'false'); define('DB_NAME','x');`).findings.map(f => f.id);
+  assert.ok(ids.includes("wp-debug-string"), "a string WP_DEBUG must be flagged as on");
+  assert.ok(!ids.includes("wp-debug-ok"), "must not report it as off");
+});
+
+test("WP_ALLOW_REPAIR left enabled is flagged", () => {
+  const ids = audit(`<?php define('WP_ALLOW_REPAIR', true); define('DB_NAME','x');`).findings.map(f => f.id);
+  assert.ok(ids.includes("allow-repair"));
+});
+
+test("normal boolean WP_DEBUG values are unaffected by the string check", () => {
+  assert.ok(audit(`<?php define('WP_DEBUG', false);`).findings.map(f => f.id).includes("wp-debug-ok"));
+  assert.ok(audit(`<?php define('WP_DEBUG', true);`).findings.map(f => f.id).includes("wp-debug"));
+});
+
+test("WP_DEBUG_LOG=true is flagged, a custom path string is not", () => {
+  const trueIds = audit(`<?php define('WP_DEBUG_LOG', true); define('DB_NAME','x');`).findings.map(f => f.id);
+  assert.ok(trueIds.includes("debug-log"), "true logs to the default web-readable path");
+  const pathIds = audit(`<?php define('WP_DEBUG_LOG', '/var/log/wp/debug.log'); define('DB_NAME','x');`).findings.map(f => f.id);
+  assert.ok(!pathIds.includes("debug-log"), "a custom path is the recommended fix, not a finding");
+});
+
+test("generated salts never contain a space, quote, or backslash", () => {
+  const bytes = (n) => { const a = new Uint8Array(n); for (let i = 0; i < n; i++) a[i] = (i * 37 + 11) % 256; return a; };
+  const out = generateSalts(bytes);
+  const values = out.split("\n").map(l => l.match(/'([^']*)'\);$/)?.[1] ?? "");
+  for (const v of values) {
+    assert.equal(v.length, 64);
+    assert.ok(!/[ '\\]/.test(v), `salt must have no space, quote, or backslash: ${JSON.stringify(v)}`);
+  }
+});

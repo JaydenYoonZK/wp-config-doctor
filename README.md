@@ -23,7 +23,8 @@ wp-config.php is the most important file in a WordPress install, and the one mos
 Every finding is ranked by severity and comes with the exact line to add or change:
 
 - **Security keys and salts**: all eight present, none still on the sample placeholder, none duplicated, none too short
-- **Debug exposure**: `WP_DEBUG`, `WP_DEBUG_DISPLAY`, and a forced `ini_set('display_errors', 1)`
+- **Debug exposure**: `WP_DEBUG`, `WP_DEBUG_DISPLAY`, and a forced `ini_set('display_errors', 1)`, including the case where `WP_DEBUG` is set to a string like `'false'`, which PHP treats as on
+- **Unauthenticated repair page**: `WP_ALLOW_REPAIR` left enabled
 - **Database credentials**: empty or common-default password (checked locally, never shown or sent)
 - **File editing**: `DISALLOW_FILE_EDIT`
 - **Transport**: `FORCE_SSL_ADMIN`
@@ -34,7 +35,7 @@ It also generates eight fresh 64-character salts using the Web Crypto API, safe 
 
 ## Is it safe to paste my config here?
 
-Yes. wp-config.php contains your database password, so this is the right question to ask. The page is static and the audit runs entirely in your browser: there are no network requests after load, nothing is stored, and your password is used only to check whether it is empty or a common default, never displayed back or transmitted. Open the network tab to confirm, or read the small [engine](docs/config.js). If you prefer, redact the four `DB_` lines before pasting; the rest of the audit still works.
+Yes. wp-config.php contains your database password, so this is the right question to ask. The page is static and the audit runs entirely in your browser: there are no network requests after load, nothing is stored, and your password is used only to check whether it is empty or a common default, never displayed back or transmitted. A Content Security Policy on the page sets `connect-src 'none'`, so the browser itself blocks any outbound connection, which means the privacy promise is enforced, not just claimed. Open the network tab to confirm, or read the small [engine](docs/config.js). If you prefer, redact the four `DB_` lines before pasting; the rest of the audit still works.
 
 ## Use it
 
@@ -65,7 +66,7 @@ const freshSalts = generateSalts();   // eight define() lines
 npm test
 ```
 
-15 tests cover the parser (including salts that contain parentheses and quotes), string-aware comment stripping so commented-out defines are not audited as active, the audit rules against hardened and insecure fixtures, duplicate-salt detection, and the salt generator.
+20 tests cover the parser (including salts that contain parentheses and quotes), string-aware comment stripping so commented-out defines are not audited as active, PHP string truthiness for `WP_DEBUG`, the `WP_ALLOW_REPAIR` and `WP_DEBUG_LOG` checks, the audit rules against hardened and insecure fixtures, duplicate-salt detection, and the salt generator.
 
 ## License
 

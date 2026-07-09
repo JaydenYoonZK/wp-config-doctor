@@ -130,10 +130,16 @@ export function parseConfig(rawSrc) {
 
 const LEVEL = { critical: 4, high: 3, medium: 2, low: 1, info: 0, pass: -1 };
 
+// Match PHP's truthiness, including its string rule: every string is true
+// except "" and "0". This is why define('WP_DEBUG', 'false') actually turns
+// debug ON, a common and costly mistake.
 function truthy(def) {
-  return def && def.type === "bool" ? def.value === true
-    : def && (def.type === "expr" || def.type === "int") ? def.value !== 0 && def.value !== "false"
-    : false;
+  if (!def) return false;
+  if (def.type === "bool") return def.value === true;
+  if (def.type === "int") return def.value !== 0;
+  if (def.type === "string") return def.value !== "" && def.value !== "0";
+  if (def.type === "expr") return def.value !== "0" && def.value.toLowerCase() !== "false";
+  return false;
 }
 
 /**
@@ -192,17 +198,22 @@ export function audit(src) {
 
   /* --- debug --- */
   const dbg = get("WP_DEBUG");
-  if (truthy(dbg)) {
+  const debugOn = truthy(dbg);
+  if (dbg && dbg.type === "string" && dbg.value !== "" && dbg.value !== "0") {
+    add("wp-debug-string", "high", "WP_DEBUG is a string, so debug is on",
+      `WP_DEBUG is set to the string "${dbg.value}". PHP treats every non-empty string as true, so debug mode is on even though this may look like it is off. On a live site that can print PHP errors and absolute server paths to visitors.`,
+      "Use a boolean with no quotes: define('WP_DEBUG', false);");
+  } else if (debugOn) {
     add("wp-debug", "high", "WP_DEBUG is on",
       "Debug mode is enabled. On a live site this can print PHP errors, warnings, and absolute server paths to visitors.",
       "Set define('WP_DEBUG', false); in production.");
-    if (truthy(get("WP_DEBUG_DISPLAY")) || !defines.has("WP_DEBUG_DISPLAY")) {
-      add("wp-debug-display", "high", "Debug output can reach visitors",
-        "With WP_DEBUG on and WP_DEBUG_DISPLAY not turned off, errors render into the page.",
-        "Add define('WP_DEBUG_DISPLAY', false); and log to a file instead.");
-    }
   } else if (dbg && dbg.type === "bool") {
     add("wp-debug-ok", "pass", "WP_DEBUG is off", "Good for production.");
+  }
+  if (debugOn && (truthy(get("WP_DEBUG_DISPLAY")) || !defines.has("WP_DEBUG_DISPLAY"))) {
+    add("wp-debug-display", "high", "Debug output can reach visitors",
+      "With WP_DEBUG on and WP_DEBUG_DISPLAY not turned off, errors render into the page.",
+      "Add define('WP_DEBUG_DISPLAY', false); and log to a file instead.");
   }
   if (/ini_set\s*\(\s*['"]display_errors['"]\s*,\s*['"]?(1|on|true)/i.test(clean)) {
     add("display-errors", "high", "display_errors is forced on",
@@ -237,6 +248,13 @@ export function audit(src) {
     add("ssl-admin-ok", "pass", "Admin is forced over HTTPS", "FORCE_SSL_ADMIN is set.");
   }
 
+  /* --- repair page --- */
+  if (truthy(get("WP_ALLOW_REPAIR"))) {
+    add("allow-repair", "high", "WP_ALLOW_REPAIR is left enabled",
+      "This exposes /wp-admin/maint/repair.php, a database repair and optimize page that anyone can reach without logging in. It is meant to be switched on briefly for a one-time repair and then removed.",
+      "Delete the WP_ALLOW_REPAIR line once the repair is finished.");
+  }
+
   /* --- db password --- */
   const dbSample = ["DB_NAME", "DB_USER", "DB_PASSWORD"].some(k => {
     const d = get(k);
@@ -258,9 +276,12 @@ export function audit(src) {
   }
 
   /* --- extra hardening & performance (info) --- */
-  if (defines.has("WP_DEBUG_LOG") && truthy(get("WP_DEBUG_LOG"))) {
+  // Only true (not a custom path string) logs to the default wp-content/debug.log.
+  // A string value is a custom path, which is the recommended fix, so it is not flagged.
+  const dbgLog = get("WP_DEBUG_LOG");
+  if (dbgLog && dbgLog.type === "bool" && dbgLog.value === true) {
     add("debug-log", "low", "Debug logging writes to a predictable path",
-      "WP_DEBUG_LOG is on. If it logs to the default wp-content/debug.log, that file can be readable over the web.",
+      "WP_DEBUG_LOG is true, so WordPress logs to wp-content/debug.log, a path that can be readable over the web.",
       "Point it at a path outside the web root, e.g. define('WP_DEBUG_LOG', '/var/log/wp/debug.log');");
   }
   if (truthy(get("AUTOMATIC_UPDATER_DISABLED"))) {
@@ -301,7 +322,7 @@ export function audit(src) {
 
 // WordPress-style character set, minus ' and \ so the value is safe inside
 // a single-quoted PHP string without escaping.
-const SALT_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_ []{}<>~`+=,.;:/?|";
+const SALT_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_[]{}<>~`+=,.;:/?|";
 
 function randomSalt(len, rng) {
   const bytes = rng(len);

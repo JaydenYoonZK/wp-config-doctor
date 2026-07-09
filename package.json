@@ -1,15 +1,25 @@
 {
   "name": "wp-config-doctor",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Audit and harden your wp-config.php: security and performance checks plus a fresh salt generator. Browser-based, no dependencies.",
   "type": "module",
   "private": true,
+  "keywords": [
+    "wordpress",
+    "wp-config",
+    "security",
+    "hardening",
+    "salts",
+    "audit"
+  ],
   "scripts": {
     "test": "node --test test/config.test.mjs",
     "serve": "python3 -m http.server 8411 -d docs"
   },
   "license": "MIT",
   "author": "Jayden Yoon ZK",
+  "homepage": "https://jaydenyoonzk.github.io/wp-config-doctor/",
+  "bugs": "https://github.com/JaydenYoonZK/wp-config-doctor/issues",
   "repository": {
     "type": "git",
     "url": "https://github.com/JaydenYoonZK/wp-config-doctor.git"

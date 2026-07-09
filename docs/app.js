@@ -1,7 +1,7 @@
 import { audit, generateSalts } from "./config.js";
 
 const $ = (id) => document.getElementById(id);
-const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 
 const input = $("input");
 const actionBtn = $("audit");
@@ -34,7 +34,14 @@ function runAudit() {
   if (!text.trim()) { results.hidden = true; return; }
   results.hidden = false;
 
-  const { findings, score, counts } = audit(text);
+  let findings, score, counts;
+  try {
+    ({ findings, score, counts } = audit(text));
+  } catch {
+    scoreRow.innerHTML = "";
+    findingsEl.innerHTML = `<div class="finding high"><span class="dot-sev"></span><div class="body"><div class="ftitle">Could not read that input</div><p class="fdetail">Something in the pasted text stopped the audit from finishing. Check that you pasted the contents of wp-config.php and try again.</p></div></div>`;
+    return;
+  }
 
   if (score === null) {
     scoreRow.innerHTML = "";
@@ -42,18 +49,20 @@ function runAudit() {
     return;
   }
 
-  const issues = findings.filter(f => f.level !== "pass").length;
+  // "Issues" are actionable severities. Info items are tidiness notes that do not
+  // lower the score, so counting them here would contradict a 100 score.
+  const issues = findings.filter(f => f.level !== "pass" && f.level !== "info").length;
   const passes = findings.filter(f => f.level === "pass").length;
   const circ = 2 * Math.PI * 42;
   const dash = circ * (score / 100);
   scoreRow.innerHTML = `
     <div class="score-dial">
-      <svg viewBox="0 0 96 96" width="96" height="96">
+      <svg viewBox="0 0 96 96" width="96" height="96" aria-hidden="true">
         <circle cx="48" cy="48" r="42" stroke="var(--line-strong)" stroke-width="8" fill="none"/>
         <circle cx="48" cy="48" r="42" stroke="${scoreColor(score)}" stroke-width="8" fill="none" stroke-linecap="round"
-                stroke-dasharray="${dash.toFixed(1)} ${circ.toFixed(1)}"/>
+                stroke-dasharray="${dash.toFixed(1)} ${circ.toFixed(1)}" transform="rotate(-90 48 48)"/>
       </svg>
-      <div class="num" style="color:${scoreColor(score)}">${score}</div>
+      <div class="num" style="color:${scoreColor(score)}">${score}<span class="sr-only"> out of 100 hardening score</span></div>
     </div>
     <div class="score-caption">
       <strong>${issues} issue${issues === 1 ? "" : "s"} to review</strong>, ${passes} check${passes === 1 ? "" : "s"} passed.<br>
