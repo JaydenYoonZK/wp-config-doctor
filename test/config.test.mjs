@@ -161,6 +161,12 @@ test("a commented-out hardening define is not counted as set (no false pass)", (
   assert.ok(!ids.includes("file-edit-ok"), "must not report it as disabled");
 });
 
+test("DISALLOW_FILE_MODS also counts as dashboard file editing disabled", () => {
+  const ids = audit(`<?php define('DISALLOW_FILE_MODS', true); define('DB_NAME','x');`).findings.map(f => f.id);
+  assert.ok(ids.includes("file-edit-ok"));
+  assert.ok(!ids.includes("file-edit"));
+});
+
 test("stripComments preserves salt characters that look like comments", () => {
   const salt = "ab/*c#d//e" + "x".repeat(54);   // contains /*  #  //  but is one string
   const cfg = `<?php\ndefine('AUTH_KEY', '${salt}');\n`;

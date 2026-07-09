@@ -231,12 +231,16 @@ export function audit(src) {
   }
 
   /* --- file editing --- */
-  if (!truthy(get("DISALLOW_FILE_EDIT"))) {
+  const fileEditLocked = truthy(get("DISALLOW_FILE_EDIT")) || truthy(get("DISALLOW_FILE_MODS"));
+  if (!fileEditLocked) {
     add("file-edit", "medium", "The built-in theme and plugin editor is enabled",
       "Without DISALLOW_FILE_EDIT, anyone who reaches wp-admin can edit PHP files directly, which turns one compromised admin login into full code execution.",
       "Add define('DISALLOW_FILE_EDIT', true);");
   } else {
-    add("file-edit-ok", "pass", "In-dashboard file editing is disabled", "DISALLOW_FILE_EDIT is set.");
+    add("file-edit-ok", "pass", "In-dashboard file editing is disabled",
+      truthy(get("DISALLOW_FILE_MODS"))
+        ? "DISALLOW_FILE_MODS is set, which also disables the built-in file editor."
+        : "DISALLOW_FILE_EDIT is set.");
   }
 
   /* --- ssl admin --- */

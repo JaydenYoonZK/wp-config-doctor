@@ -3,6 +3,20 @@
 All notable changes to this project are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## Unreleased
+
+### Added
+
+- CI now runs the test suite and browser module syntax checks on Linux, Windows, and macOS.
+- Security reporting is documented through GitHub private vulnerability reports.
+- Regression coverage now verifies that `DISALLOW_FILE_MODS` also satisfies the dashboard file-editor lockdown check.
+
+### Fixed
+
+- `DISALLOW_FILE_MODS` no longer triggers a false warning about the dashboard file editor being enabled. WordPress treats it as the broader file-modification lockdown, so it also disables the file editor.
+- The README stars badge now links to the repository page instead of the zero-star `/stargazers` page that GitHub returns as 404.
+- The browser tool cache-busts its config audit engine import so Pages serves the current audited code.
+
 ## [1.3.0] - 2026-07-09
 
 ### Added

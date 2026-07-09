@@ -4,7 +4,8 @@ Paste your `wp-config.php` and get a plain-language security and performance aud
 
 <p>
   <a href="https://jaydenyoonzk.github.io/wp-config-doctor/"><img src="https://img.shields.io/badge/Live%20tool-open-abcf37?style=for-the-badge&logo=githubpages&logoColor=black" alt="Open the live tool"></a>
-  <a href="https://github.com/JaydenYoonZK/wp-config-doctor/stargazers"><img src="https://img.shields.io/github/stars/JaydenYoonZK/wp-config-doctor?style=for-the-badge&logo=github" alt="GitHub stars"></a>
+  <a href="https://github.com/JaydenYoonZK/wp-config-doctor/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/JaydenYoonZK/wp-config-doctor/ci.yml?style=for-the-badge&label=tests" alt="CI status"></a>
+  <a href="https://github.com/JaydenYoonZK/wp-config-doctor"><img src="https://img.shields.io/github/stars/JaydenYoonZK/wp-config-doctor?style=for-the-badge&logo=github" alt="GitHub stars"></a>
   <a href="LICENSE"><img src="https://img.shields.io/github/license/JaydenYoonZK/wp-config-doctor?style=for-the-badge" alt="MIT License"></a>
 </p>
 
@@ -26,7 +27,7 @@ Every finding is ranked by severity and comes with the exact line to add or chan
 - **Debug exposure**: `WP_DEBUG`, `WP_DEBUG_DISPLAY`, and a forced `ini_set('display_errors', 1)`, including the case where `WP_DEBUG` is set to a string like `'false'`, which PHP treats as on
 - **Unauthenticated repair page**: `WP_ALLOW_REPAIR` left enabled
 - **Database credentials**: empty or common-default password (checked locally, never shown or sent)
-- **File editing**: `DISALLOW_FILE_EDIT`
+- **File editing**: `DISALLOW_FILE_EDIT` or the broader `DISALLOW_FILE_MODS`
 - **Transport**: `FORCE_SSL_ADMIN`, and `WP_HOME` / `WP_SITEURL` hardcoded to an insecure `http://` address
 - **Table prefix**: whether it is still the default `wp_`
 - **Hardening and performance extras**: automatic updates, debug log location, environment type, post revisions, memory limit
@@ -66,7 +67,7 @@ const freshSalts = generateSalts();   // eight define() lines
 npm test
 ```
 
-21 tests cover the parser (including salts that contain parentheses and quotes), string-aware comment stripping so commented-out defines are not audited as active, PHP string truthiness for `WP_DEBUG`, the `WP_ALLOW_REPAIR`, `WP_DEBUG_LOG`, and insecure `WP_HOME` / `WP_SITEURL` checks, the audit rules against hardened and insecure fixtures, duplicate-salt detection, and the salt generator.
+22 tests cover the parser (including salts that contain parentheses and quotes), string-aware comment stripping so commented-out defines are not audited as active, PHP string truthiness for `WP_DEBUG`, the `WP_ALLOW_REPAIR`, `WP_DEBUG_LOG`, `DISALLOW_FILE_MODS`, and insecure `WP_HOME` / `WP_SITEURL` checks, the audit rules against hardened and insecure fixtures, duplicate-salt detection, and the salt generator.
 
 ## License
 
