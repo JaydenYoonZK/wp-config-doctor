@@ -1,4 +1,4 @@
-import { audit, generateSalts } from "./config.js?v=20260710a";
+import { audit, generateSalts } from "./config.js?v=20260710b";
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
