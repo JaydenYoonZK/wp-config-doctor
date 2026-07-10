@@ -1,4 +1,4 @@
-import { audit, generateSalts } from "./config.js?v=20260710d";
+import { audit, generateSalts } from "./config.js?v=20260710e";
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
@@ -194,7 +194,12 @@ function syncActiveLink() {
   if (navSections.length && Math.ceil(scrollY + innerHeight) >= document.documentElement.scrollHeight - 2) {
     current = navSections[navSections.length - 1];
   }
-  for (const a of navAnchors) a.classList.toggle("active", !!current && a.hash === "#" + current.id);
+  for (const a of navAnchors) {
+    const on = !!current && a.hash === "#" + current.id;
+    a.classList.toggle("active", on);
+    if (on) a.setAttribute("aria-current", "true");
+    else a.removeAttribute("aria-current");
+  }
 }
 let spyRaf = 0;
 addEventListener("scroll", () => { if (!spyRaf) spyRaf = requestAnimationFrame(() => { spyRaf = 0; syncActiveLink(); }); }, { passive: true });
