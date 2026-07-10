@@ -1,4 +1,4 @@
-import { audit, generateSalts } from "./config.js?v=20260710h";
+import { audit, generateSalts } from "./config.js?v=20260710i";
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
@@ -164,7 +164,11 @@ newSalts();
 if (new URLSearchParams(location.search).has("demo")) loadSample();
 
 const themeToggle = document.getElementById("theme-toggle");
-function syncThemeIcon() { themeToggle.textContent = document.documentElement.dataset.theme === "light" ? "🌙" : "☀️"; }
+function syncThemeIcon() {
+  const label = document.documentElement.dataset.theme === "light" ? "Switch to dark mode" : "Switch to light mode";
+  themeToggle.setAttribute("aria-label", label);
+  themeToggle.setAttribute("data-tip", label);
+}
 themeToggle.addEventListener("click", () => {
   const next = document.documentElement.dataset.theme === "light" ? "dark" : "light";
   document.documentElement.dataset.theme = next;
