@@ -3,6 +3,13 @@
 All notable changes to this project are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.3.8] - 2026-07-10
+
+### Changed
+
+- Removed the pulsing status dot from the privacy pill. The animated dot has become one of the most recognizable template cliches on the web, and it was redundant next to the lock icon that already carries the meaning. The pill now leads with the lock alone, with its padding evened out.
+- The README preview is regenerated.
+
 ## [1.3.7] - 2026-07-10
 
 ### Added
@@ -159,6 +166,7 @@ First stable release.
 - Dependency-free ES module engine (docs/config.js) with 10 Node tests.
 - Browser UI in the shared suite design with light and dark themes and a ?demo deep link.
 
+[1.3.8]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.3.8
 [1.3.7]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.3.7
 [1.3.6]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.3.6
 [1.3.5]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.3.5
