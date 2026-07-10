@@ -3,6 +3,12 @@
 All notable changes to this project are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.3.18] - 2026-07-10
+
+### Changed
+
+- Pressing a button now reads as the cap sinking into its socket. Before, the dark bottom edge collapsed as the button traveled down, which looked like the base rising to meet it. The edge now stays put beneath the sunken cap and a soft shadow falls across the cap's top, so the press feels like a real key going down.
+
 ## [1.3.17] - 2026-07-10
 
 ### Added
@@ -226,6 +232,7 @@ First stable release.
 - Dependency-free ES module engine (docs/config.js) with 10 Node tests.
 - Browser UI in the shared suite design with light and dark themes and a ?demo deep link.
 
+[1.3.18]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.3.18
 [1.3.17]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.3.17
 [1.3.16]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.3.16
 [1.3.15]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.3.15
