@@ -3,6 +3,12 @@
 All notable changes to this project are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.3.22] - 2026-07-11
+
+### Fixed
+
+- The theme toggle no longer glitches when tapped on phones. Touch browsers pin the hover state to the last-tapped control, so after a tap the toggle sat stuck mid-twist with its hover halo on, layered over the press spin. All decorative hover styling for buttons, the toggle, and the scroll-to-top control now only exists on devices that can actually hover; touch devices get the clean press feedback alone. Controls also opt out of the double-tap zoom gesture, so taps respond without hesitation.
+
 ## [1.3.21] - 2026-07-11
 
 ### Fixed
@@ -253,6 +259,7 @@ First stable release.
 - Dependency-free ES module engine (docs/config.js) with 10 Node tests.
 - Browser UI in the shared suite design with light and dark themes and a ?demo deep link.
 
+[1.3.22]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.3.22
 [1.3.21]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.3.21
 [1.3.20]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.3.20
 [1.3.19]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.3.19
