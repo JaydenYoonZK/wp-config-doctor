@@ -3,6 +3,12 @@
 All notable changes to this project are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.4.8] - 2026-07-11
+
+### Changed
+
+- The film grain steps up once more in both themes. With the fine dot size this reads as richer paper texture rather than noise. README previews regenerated.
+
 ## [1.4.7] - 2026-07-11
 
 ### Changed
@@ -342,6 +348,7 @@ First stable release.
 - Dependency-free ES module engine (docs/config.js) with 10 Node tests.
 - Browser UI in the shared suite design with light and dark themes and a ?demo deep link.
 
+[1.4.8]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.8
 [1.4.7]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.7
 [1.4.6]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.6
 [1.4.5]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.5
