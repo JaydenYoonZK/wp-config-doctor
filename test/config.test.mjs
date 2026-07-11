@@ -112,6 +112,10 @@ test("display_errors forced on is flagged", () => {
   const cfg = `<?php ini_set('display_errors', 1); define('WP_DEBUG', false);`;
   const { findings } = audit(cfg);
   assert.ok(findings.some(f => f.id === "display-errors"));
+  for (const off of ["0", "Off", "false", "No", "None"]) {
+    const ids = audit(`<?php ini_set('display_errors', '${off}');`).findings.map(f => f.id);
+    assert.equal(ids.includes("display-errors"), false, off);
+  }
 });
 
 test("sample-file DB placeholders are recognized", () => {
@@ -211,6 +215,10 @@ test("WP_DEBUG_LOG=true is flagged, a custom path string is not", () => {
   assert.ok(trueIds.includes("debug-log"), "true logs to the default web-readable path");
   const pathIds = audit(`<?php define('WP_DEBUG_LOG', '/var/log/wp/debug.log'); define('DB_NAME','x');`).findings.map(f => f.id);
   assert.ok(!pathIds.includes("debug-log"), "a custom path is the recommended fix, not a finding");
+  for (const value of ["'true'", "'1'", "1"]) {
+    const ids = audit(`<?php define('WP_DEBUG_LOG', ${value});`).findings.map(f => f.id);
+    assert.ok(ids.includes("debug-log"), value);
+  }
 });
 
 test("generated salts never contain a space, quote, or backslash", () => {
@@ -228,4 +236,126 @@ test("WP_HOME / WP_SITEURL hardcoded to http:// is flagged, https is not", () =>
   assert.ok(http.includes("wp-siteurl-http"));
   const https = audit(`<?php define('WP_HOME','https://example.com'); define('DB_NAME','x');`).findings.map(f => f.id);
   assert.ok(!https.includes("wp-home-http"));
+});
+
+test("code-like text inside strings and heredocs is never executed by the parser", () => {
+  const cfg = `<?php
+define('DB_PASSWORD', "define('WP_DEBUG', true); ini_set('display_errors', 1); $table_prefix = 'wp_';");
+$note = <<<'TEXT'
+define('WP_ALLOW_REPAIR', true);
+ini_set('display_errors', 1);
+TEXT;
+define('WP_DEBUG', false);
+$table_prefix = 'custom_';`;
+  const parsed = parseConfig(cfg);
+  assert.equal(parsed.defines.get("WP_DEBUG").value, false);
+  assert.equal(parsed.defines.has("WP_ALLOW_REPAIR"), false);
+  assert.equal(parsed.tablePrefix, "custom_");
+  assert.equal(parsed.displayErrorsForced, false);
+  const ids = audit(cfg).findings.map(f => f.id);
+  assert.equal(ids.includes("wp-debug"), false);
+  assert.equal(ids.includes("display-errors"), false);
+  assert.equal(ids.includes("allow-repair"), false);
+});
+
+test("PHP function names are case-insensitive", () => {
+  const parsed = parseConfig(`<?php DEFINE("WP_DEBUG", FALSE);`);
+  assert.equal(parsed.defines.get("WP_DEBUG").value, false);
+});
+
+test("literal prefixes followed by expressions stay dynamic", () => {
+  const cfg = `<?php
+define('DB_PASSWORD', '' . getenv('DB_PASSWORD'));
+define('WP_HOME', 'http://' . getenv('HTTP_HOST'));
+define('FORCE_SSL_ADMIN', getenv('FORCE_SSL_ADMIN'));
+define('DISALLOW_FILE_EDIT', env_flag('LOCK_EDITOR'));
+define('WP_DEBUG', getenv('WP_DEBUG'));
+define('WP_ALLOW_REPAIR', env_flag('ALLOW_REPAIR'));
+$table_prefix = getenv('DB_PREFIX');`;
+  const parsed = parseConfig(cfg);
+  assert.equal(parsed.defines.get("DB_PASSWORD").type, "expr");
+  assert.equal(parsed.defines.get("WP_HOME").type, "expr");
+  assert.equal(parsed.tablePrefix, null);
+  assert.equal(parsed.tablePrefixType, "expr");
+  const ids = audit(cfg).findings.map(f => f.id);
+  assert.equal(ids.includes("db-empty"), false);
+  assert.equal(ids.includes("wp-home-http"), false);
+  for (const id of ["ssl-admin-dynamic", "file-edit-dynamic", "wp-debug-dynamic", "allow-repair-dynamic", "table-prefix-dynamic"]) {
+    assert.ok(ids.includes(id), id);
+  }
+  assert.equal(ids.includes("ssl-admin-ok"), false);
+  assert.equal(ids.includes("file-edit-ok"), false);
+});
+
+test("duplicate security constants are reported without changing first-definition semantics", () => {
+  const cfg = `<?php define('WP_DEBUG', false); define('WP_DEBUG', true);`;
+  const parsed = parseConfig(cfg);
+  assert.equal(parsed.defines.get("WP_DEBUG").value, false);
+  assert.deepEqual(parsed.duplicateDefines, ["WP_DEBUG"]);
+  const ids = audit(cfg).findings.map(f => f.id);
+  assert.ok(ids.includes("duplicate-defines"));
+  assert.ok(ids.includes("wp-debug-ok"));
+  assert.equal(ids.includes("wp-debug"), false);
+});
+
+test("unterminated and interpolated strings are not trusted as literals", () => {
+  const interpolated = parseConfig('<?php define("DB_PASSWORD", "$DB_PASSWORD");');
+  assert.equal(interpolated.defines.get("DB_PASSWORD").type, "expr");
+  const unterminated = parseConfig("<?php define('WP_DEBUG', 'false);");
+  assert.equal(unterminated.defines.has("WP_DEBUG"), false);
+});
+
+test("double-quoted PHP escapes are decoded for literal checks", () => {
+  const parsed = parseConfig('<?php define("DB_PASSWORD", "pass\\x77ord\\n");');
+  assert.equal(parsed.defines.get("DB_PASSWORD").value, "password\n");
+});
+
+test("invalid environment types are explained", () => {
+  const ids = audit(`<?php define('WP_ENVIRONMENT_TYPE', 'prod');`).findings.map(f => f.id);
+  assert.ok(ids.includes("env-type-invalid"));
+  assert.equal(ids.includes("env-type"), false);
+});
+
+test("debug mode is not penalized in local and development environments", () => {
+  for (const environment of ["local", "development"]) {
+    const result = audit(`<?php define('WP_ENVIRONMENT_TYPE', '${environment}'); define('WP_DEBUG', true);`);
+    const ids = result.findings.map(f => f.id);
+    assert.ok(ids.includes("wp-debug-development"), environment);
+    assert.equal(ids.includes("wp-debug"), false, environment);
+    assert.equal(ids.includes("wp-debug-display"), false, environment);
+  }
+  const staging = audit(`<?php define('WP_ENVIRONMENT_TYPE', 'staging'); define('WP_DEBUG', true);`).findings.map(f => f.id);
+  assert.ok(staging.includes("wp-debug"));
+});
+
+test("non-string and dynamic salts cannot receive a clean pass", () => {
+  const values = SALT_KEYS.map((key, index) => index === 0
+    ? `define('${key}', true);`
+    : index === 1
+      ? `define('${key}', getenv('${key}'));`
+      : `define('${key}', '${key}_${"x".repeat(50)}');`
+  ).join("\n");
+  const ids = audit(`<?php\n${values}`).findings.map(f => f.id);
+  assert.ok(ids.includes("salts-invalid"));
+  assert.ok(ids.includes("salts-dynamic"));
+  assert.equal(ids.includes("salts-ok"), false);
+});
+
+test("salt generation rejects biased tail bytes and malformed random sources", () => {
+  let calls = 0;
+  const salts = generateSalts((n) => {
+    calls++;
+    const bytes = new Uint8Array(n);
+    bytes.fill(calls === 1 ? 255 : calls % 170);
+    return bytes;
+  });
+  assert.equal(salts.split("\n").length, 8);
+  assert.ok(calls > 8, "rejected bytes require another random batch");
+  assert.throws(() => generateSalts(() => [999]), /invalid byte/);
+  assert.throws(() => generateSalts(() => null), /must return bytes/);
+});
+
+test("parser rejects non-string and oversized input", () => {
+  assert.throws(() => parseConfig(null), /must be a string/);
+  assert.throws(() => parseConfig("x".repeat(1024 * 1024 + 1)), /exceeds 1 MiB/);
 });

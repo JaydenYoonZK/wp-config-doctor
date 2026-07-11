@@ -1,4 +1,4 @@
-import { audit, generateSalts } from "./config.js?v=20260711x";
+import { audit, generateSalts } from "./config.js?v=1.4.0";
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
@@ -37,9 +37,12 @@ function runAudit() {
   let findings, score, counts;
   try {
     ({ findings, score, counts } = audit(text));
-  } catch {
+  } catch (error) {
     scoreRow.innerHTML = "";
-    findingsEl.innerHTML = `<div class="finding high"><span class="dot-sev"></span><div class="body"><div class="ftitle">Could not read that input</div><p class="fdetail">Something in the pasted text stopped the audit from finishing. Check that you pasted the contents of wp-config.php and try again.</p></div></div>`;
+    const detail = error instanceof RangeError
+      ? error.message
+      : "Something in the pasted text stopped the audit from finishing. Check that you pasted the contents of wp-config.php and try again.";
+    findingsEl.innerHTML = `<div class="finding high"><span class="dot-sev"></span><div class="body"><div class="ftitle">Could not read that input</div><p class="fdetail">${esc(detail)}</p></div></div>`;
     return;
   }
 

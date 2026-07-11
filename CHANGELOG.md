@@ -3,6 +3,29 @@
 All notable changes to this project are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.4.0] - 2026-07-11
+
+### Added
+
+- The parser now reports dynamic security constants, duplicate definitions, non-string salts, dynamic salts, and invalid environment types without claiming a false pass.
+- Regression coverage now includes code-like secrets, heredocs, uppercase PHP function names, concatenated expressions, duplicate constants, PHP string escapes, dynamic lockdown values, input limits, environment-aware debug mode, and random-source failures.
+- Engine limits cap pasted input at 1 MiB, and CI covers supported Node.js releases 20, 22, and 24 alongside Windows and macOS.
+
+### Changed
+
+- Parsing now uses a lexical pass that separates executable PHP from strings, comments, heredocs, and nested expressions before recognizing calls or assignments.
+- Debug mode on a declared local or development environment is informational instead of lowering the hardening score.
+- Salt generation uses rejection sampling to avoid modulo bias and rejects duplicate output from a faulty random source.
+- Privacy, static-analysis limits, salt rotation, and rule sources are documented more precisely.
+
+### Fixed
+
+- Code-like text inside a password, salt, quoted string, or heredoc can no longer create false findings for constants, table prefixes, or `ini_set()` calls.
+- A quoted literal followed by concatenation is no longer mistaken for the complete value of a dynamic expression.
+- PHP function names are recognized case-insensitively, quoted string escapes are decoded consistently, and unterminated strings are not trusted.
+- `display_errors` values such as `Off`, `false`, and `No` are no longer reported as enabled.
+- String and integer forms of `WP_DEBUG_LOG` that select the default log path are now reported consistently.
+
 ## [1.3.25] - 2026-07-11
 
 ### Fixed
@@ -277,6 +300,7 @@ First stable release.
 - Dependency-free ES module engine (docs/config.js) with 10 Node tests.
 - Browser UI in the shared suite design with light and dark themes and a ?demo deep link.
 
+[1.4.0]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.0
 [1.3.25]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.3.25
 [1.3.24]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.3.24
 [1.3.23]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.3.23
