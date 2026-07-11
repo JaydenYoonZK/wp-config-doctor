@@ -1,0 +1,16 @@
+# WP Config Doctor
+
+> Audit and harden your wp-config.php in the browser: security and performance checks plus a fresh salt generator. Credentials never leave the device.
+
+## Tool
+
+- [WP Config Doctor](https://jaydenyoonzk.github.io/wp-config-doctor/): the tool itself, a static page that runs entirely in the browser with no accounts and no data collection
+
+## Documentation
+
+- [README](https://github.com/JaydenYoonZK/wp-config-doctor#readme): what the tool does, how it works, and its engineering notes
+- [Changelog](https://github.com/JaydenYoonZK/wp-config-doctor/blob/main/CHANGELOG.md): dated release history
+
+## Source
+
+- [Repository](https://github.com/JaydenYoonZK/wp-config-doctor): MIT licensed source code

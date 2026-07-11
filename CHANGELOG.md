@@ -3,6 +3,12 @@
 All notable changes to this project are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.4.13] - 2026-07-11
+
+### Added
+
+- The site now publishes its own search and AI crawler metadata: a robots.txt with a deliberate allow policy, a sitemap.xml, and an llms.txt that maps the tool, documentation, and source for AI systems. The llms.txt follows the structure the format proposes, with the required name heading, a summary blockquote, and annotated link sections.
+
 ## [1.4.12] - 2026-07-11
 
 ### Added
@@ -372,6 +378,7 @@ First stable release.
 - Dependency-free ES module engine (docs/config.js) with 10 Node tests.
 - Browser UI in the shared suite design with light and dark themes and a ?demo deep link.
 
+[1.4.13]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.13
 [1.4.12]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.12
 [1.4.11]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.11
 [1.4.10]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.10
