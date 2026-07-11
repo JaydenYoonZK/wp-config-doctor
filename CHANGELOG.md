@@ -3,6 +3,12 @@
 All notable changes to this project are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.4.11] - 2026-07-11
+
+### Changed
+
+- Social sharing metadata carries explicit X and Twitter titles and descriptions, matching the other tools in the suite.
+
 ## [1.4.10] - 2026-07-11
 
 ### Fixed
@@ -360,6 +366,7 @@ First stable release.
 - Dependency-free ES module engine (docs/config.js) with 10 Node tests.
 - Browser UI in the shared suite design with light and dark themes and a ?demo deep link.
 
+[1.4.11]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.11
 [1.4.10]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.10
 [1.4.9]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.9
 [1.4.8]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.8
