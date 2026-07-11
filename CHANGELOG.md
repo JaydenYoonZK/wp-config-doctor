@@ -3,6 +3,12 @@
 All notable changes to this project are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.4.12] - 2026-07-11
+
+### Added
+
+- A skip to main content link for keyboard and screen reader users. It waits off screen as the page's first focusable element and drops in as a chartreuse key when focused, jumping past the navigation straight to the tool. The slide respects reduced motion preferences.
+
 ## [1.4.11] - 2026-07-11
 
 ### Changed
@@ -366,6 +372,7 @@ First stable release.
 - Dependency-free ES module engine (docs/config.js) with 10 Node tests.
 - Browser UI in the shared suite design with light and dark themes and a ?demo deep link.
 
+[1.4.12]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.12
 [1.4.11]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.11
 [1.4.10]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.10
 [1.4.9]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.9
