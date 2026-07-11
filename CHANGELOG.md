@@ -3,6 +3,12 @@
 All notable changes to this project are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.4.10] - 2026-07-11
+
+### Fixed
+
+- A disabled primary button no longer blends the pressed-key look with the dashed disabled outline. The primary styling outranked the disabled state, so buttons such as a not-yet-usable submit looked clickable and not clickable at once, with light mode even painting the full chartreuse key under the dashes. Disabled primaries now render as a flat ghost in both themes.
+
 ## [1.4.9] - 2026-07-11
 
 ### Fixed
@@ -354,6 +360,7 @@ First stable release.
 - Dependency-free ES module engine (docs/config.js) with 10 Node tests.
 - Browser UI in the shared suite design with light and dark themes and a ?demo deep link.
 
+[1.4.10]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.10
 [1.4.9]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.9
 [1.4.8]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.8
 [1.4.7]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.7
