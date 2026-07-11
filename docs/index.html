@@ -22,7 +22,7 @@
       document.documentElement.dataset.theme = t;
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=20260711x">
+  <link rel="stylesheet" href="styles.css?v=1.4.0">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -180,20 +180,20 @@
       <li><strong>Security keys and salts</strong>: all eight present, none still holding the sample placeholder, none duplicated, none suspiciously short.</li>
       <li><strong>Debug exposure</strong>: <code>WP_DEBUG</code> and <code>WP_DEBUG_DISPLAY</code>, plus a forced <code>ini_set('display_errors', 1)</code>, any of which can print server paths and errors to visitors.</li>
       <li><strong>Database credentials</strong>: an empty or default password (checked locally, never shown or sent).</li>
-      <li><strong>File editing</strong>: <code>DISALLOW_FILE_EDIT</code>, which stops a compromised admin account from editing PHP in the dashboard.</li>
+      <li><strong>File editing</strong>: <code>DISALLOW_FILE_EDIT</code> and the broader <code>DISALLOW_FILE_MODS</code>, which stop dashboard file editing when their runtime value is enabled.</li>
       <li><strong>Transport</strong>: <code>FORCE_SSL_ADMIN</code> for encrypted logins.</li>
       <li><strong>Table prefix</strong>: whether it is still the default <code>wp_</code>.</li>
       <li><strong>Hardening and performance extras</strong>: automatic updates, debug log location, environment type, post revisions, memory limit.</li>
     </ul>
 
-    <h2 id="privacy">🔒 Why pasting your config here is safe</h2>
-    <p>wp-config.php contains your database password, so where you paste it matters. This tool is a static page: the audit runs entirely in your browser with JavaScript, there are no network requests after the page loads, and nothing is stored. Your password is used only to check whether it is empty or a common default, and it is never displayed back or transmitted. You can open the browser network tab to confirm nothing leaves, or read the small <a href="https://github.com/JaydenYoonZK/wp-config-doctor/blob/main/docs/config.js">engine</a>. If you would still rather not, redact the four <code>DB_</code> lines before pasting; the rest of the audit works fine without them.</p>
+    <h2 id="privacy">🔒 How the privacy boundary works</h2>
+    <p>wp-config.php contains your database password, so where you paste it matters. This published build is a static page. The audit runs in your browser, stores nothing, and does not send the pasted text anywhere. Its Content Security Policy blocks connections and limits images to this origin or embedded data. You can inspect the small <a href="https://github.com/JaydenYoonZK/wp-config-doctor/blob/main/docs/config.js">engine</a> or use the tool locally. You can also redact the four <code>DB_</code> lines; the remaining checks still work.</p>
 
     <h2 id="faq">💬 Questions people ask</h2>
     <h3>Should I really change the table prefix?</h3>
     <p>On a new install, yes, pick something non-default. On a live site, changing it means renaming database tables and updating references, which is risky to do casually. The audit flags <code>wp_</code> as low severity for exactly this reason: it is obscurity, not a real defense, so do not break a working site chasing it.</p>
     <h3>How often should I rotate salts?</h3>
-    <p>A few times a year is plenty, and any time you suspect a compromise. Rotating them invalidates every logged-in session immediately, which is the quickest way to kick out an attacker who has a stolen cookie.</p>
+    <p>Rotate them when you suspect a compromise or need to invalidate every logged-in session. Routine calendar-based rotation is not required. Changing the salts signs everyone out immediately.</p>
     <h3>Does a high score mean my site is secure?</h3>
     <p>No. This audits one file. Real security also depends on updates, strong passwords, hosting, plugins, and more. A clean wp-config.php removes a set of common, avoidable mistakes; it is a floor, not a ceiling.</p>
     <h3>Can I use the audit rules in my own tooling?</h3>
@@ -213,6 +213,6 @@
 </footer>
 
 <button id="to-top" class="to-top" type="button" aria-label="Back to top">&#8593;</button>
-<script type="module" src="app.js?v=20260711x"></script>
+<script type="module" src="app.js?v=1.4.0"></script>
 </body>
 </html>

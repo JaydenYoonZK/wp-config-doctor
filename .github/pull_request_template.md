@@ -5,4 +5,4 @@
 ## Checklist
 
 - [ ] `npm test` passes
-- [ ] Parser or replace changes have a test with the motivating serialized value
+- [ ] Parser or audit-rule changes have a test with the motivating wp-config.php snippet

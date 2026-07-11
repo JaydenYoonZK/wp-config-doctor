@@ -17,7 +17,7 @@ Paste your `wp-config.php` and get a plain-language security and performance aud
 
 ## Why this exists
 
-wp-config.php is the most important file in a WordPress install, and the one most people configure once and never look at again. The common mistakes are quiet and dangerous: debug mode left on in production leaking server paths, the eight security salts still holding the sample "put your unique phrase here" placeholder, the file editor left open so one stolen admin login becomes full code execution. None of these throw an error. This tool finds them.
+wp-config.php holds database credentials, authentication salts, debug settings, and several security switches. Small mistakes there can be hard to notice: production debug output, sample salts, or dashboard file editing left available after setup. This tool checks those settings without connecting to the site or database.
 
 ## What it checks
 
@@ -31,12 +31,13 @@ Every finding is ranked by severity and comes with the exact line to add or chan
 - **Transport**: `FORCE_SSL_ADMIN`, and `WP_HOME` / `WP_SITEURL` hardcoded to an insecure `http://` address
 - **Table prefix**: whether it is still the default `wp_`
 - **Hardening and performance extras**: automatic updates, debug log location, environment type, post revisions, memory limit
+- **Static-analysis uncertainty**: dynamic expressions and duplicate security constants are reported for manual verification instead of receiving a false pass
 
-It also generates eight fresh 64-character salts using the Web Crypto API, safe to paste straight into wp-config.php.
+It also generates eight fresh 64-character salts with the Web Crypto API. Rejection sampling avoids modulo bias, and duplicate output from a faulty random source is rejected.
 
-## Is it safe to paste my config here?
+## How privacy is enforced
 
-Yes. wp-config.php contains your database password, so this is the right question to ask. The page is static and the audit runs entirely in your browser: there are no network requests after load, nothing is stored, and your password is used only to check whether it is empty or a common default, never displayed back or transmitted. A Content Security Policy on the page sets `connect-src 'none'`, so the browser itself blocks any outbound connection, which means the privacy promise is enforced, not just claimed. Open the network tab to confirm, or read the small [engine](docs/config.js). If you prefer, redact the four `DB_` lines before pasting; the rest of the audit still works.
+The published build is a static page. The audit runs in your browser, stores nothing, and does not send the pasted text anywhere. Its Content Security Policy sets `connect-src 'none'`, blocks forms, and limits images to the same origin or embedded data. The [engine](docs/config.js) is small enough to inspect, and the tool can be run locally. You may also redact the four `DB_` lines; the remaining checks still work.
 
 ## Use it
 
@@ -67,7 +68,15 @@ const freshSalts = generateSalts();   // eight define() lines
 npm test
 ```
 
-22 tests cover the parser (including salts that contain parentheses and quotes), string-aware comment stripping so commented-out defines are not audited as active, PHP string truthiness for `WP_DEBUG`, the `WP_ALLOW_REPAIR`, `WP_DEBUG_LOG`, `DISALLOW_FILE_MODS`, and insecure `WP_HOME` / `WP_SITEURL` checks, the audit rules against hardened and insecure fixtures, duplicate-salt detection, and the salt generator.
+33 tests cover lexical parsing, comments, heredocs, PHP strings and escapes, nested expressions, duplicate definitions, dynamic values, environment-aware debug checks, salts, URL and repair-page findings, input limits, and unbiased salt generation. Coverage is measured with `npm run test:coverage`.
+
+## Limits
+
+This is static analysis, not a PHP runtime. It does not execute environment lookups, helper functions, conditionals, or concatenated expressions. Those values are marked for manual verification. Input is capped at 1 MiB so an accidental paste cannot tie up the page. A high score covers this file only; it does not assess plugins, users, hosting, file permissions, backups, or whether the running site matches the pasted file.
+
+## Rule sources
+
+The audit follows WordPress's own documentation for [wp-config.php](https://developer.wordpress.org/advanced-administration/wordpress/wp-config/), [hardening](https://developer.wordpress.org/advanced-administration/security/hardening/), [HTTPS administration](https://developer.wordpress.org/advanced-administration/security/https/), and the allowed values returned by [`wp_get_environment_type()`](https://developer.wordpress.org/reference/functions/wp_get_environment_type/). For a server-side alternative, WP-CLI provides [`wp config shuffle-salts`](https://developer.wordpress.org/cli/commands/config/shuffle-salts/).
 
 ## License
 
