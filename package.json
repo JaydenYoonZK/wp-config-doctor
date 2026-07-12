@@ -1,6 +1,6 @@
 {
   "name": "wp-config-doctor",
-  "version": "1.4.17",
+  "version": "1.4.18",
   "description": "Audit and harden your wp-config.php: security and performance checks plus a fresh salt generator. Browser-based, no dependencies.",
   "type": "module",
   "private": true,
