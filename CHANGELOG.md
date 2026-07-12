@@ -3,6 +3,12 @@
 All notable changes to this project are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.4.26] - 2026-07-12
+
+### Added
+
+- The navigation bar lifts with a soft, tight shadow once the page scrolls beneath it, and sits flush again at the top. Each theme carries its own tint.
+
 ## [1.4.25] - 2026-07-12
 
 ### Added
@@ -460,6 +466,7 @@ First stable release.
 - Dependency-free ES module engine (docs/config.js) with 10 Node tests.
 - Browser UI in the shared suite design with light and dark themes and a ?demo deep link.
 
+[1.4.26]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.26
 [1.4.25]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.25
 [1.4.24]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.24
 [1.4.23]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.23
