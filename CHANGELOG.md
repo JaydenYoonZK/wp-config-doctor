@@ -3,6 +3,12 @@
 All notable changes to this project are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.4.21] - 2026-07-12
+
+### Changed
+
+- The footer is now centered, and the copyright line links a bold Jayden Yoon ZK to https://www.JaydenYoonZK.com.
+
 ## [1.4.20] - 2026-07-12
 
 ### Added
@@ -421,6 +427,7 @@ First stable release.
 - Dependency-free ES module engine (docs/config.js) with 10 Node tests.
 - Browser UI in the shared suite design with light and dark themes and a ?demo deep link.
 
+[1.4.21]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.21
 [1.4.20]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.20
 [1.4.19]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.19
 [1.4.18]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.18
