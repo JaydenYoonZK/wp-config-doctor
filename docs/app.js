@@ -1,5 +1,5 @@
 /*! WP Config Doctor | Copyright (c) 2026 Jayden Yoon ZK | MIT License | https://github.com/JaydenYoonZK/wp-config-doctor */
-import { audit, generateSalts } from "./config.js?v=1.4.22";
+import { audit, generateSalts } from "./config.js?v=1.4.23";
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
@@ -417,3 +417,13 @@ console.info(
 // The footer's copyright year keeps itself current.
 const yearEl = document.getElementById("copyright-year");
 if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+
+// FAQ accordions: the button carries the disclosure state, so keyboard
+// and screen reader users get the expand and collapse for free.
+document.querySelectorAll(".faq-q button").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const item = btn.closest(".faq-item");
+    const open = item.classList.toggle("open");
+    btn.setAttribute("aria-expanded", String(open));
+  });
+});

@@ -26,7 +26,7 @@
       document.documentElement.dataset.theme = t;
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=1.4.22">
+  <link rel="stylesheet" href="styles.css?v=1.4.23">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -180,8 +180,8 @@
 
   <div class="prose">
     <h2 id="checks">🔎 What it checks</h2>
-    <p>Every finding is ranked by severity and comes with the exact line to add or change. The checks, roughly from most to least urgent:</p>
-    <ul>
+    <p class="full-measure">Every finding is ranked by severity and comes with the exact line to add or change. The checks, roughly from most to least urgent:</p>
+    <ul class="kept-columns">
       <li><strong>Security keys and salts</strong>: all eight present, none still holding the sample placeholder, none duplicated, none suspiciously short.</li>
       <li><strong>Debug exposure</strong>: <code>WP_DEBUG</code> and <code>WP_DEBUG_DISPLAY</code>, plus a forced <code>ini_set('display_errors', 1)</code>, any of which can print server paths and errors to visitors.</li>
       <li><strong>Database credentials</strong>: an empty or default password (checked locally, never shown or sent).</li>
@@ -192,18 +192,66 @@
     </ul>
 
     <h2 id="privacy">🔒 How the privacy boundary works</h2>
-    <p>wp-config.php contains your database password, so where you paste it matters. This published build is a static page. The audit runs in your browser, stores nothing, and does not send the pasted text anywhere. Its Content Security Policy blocks connections and limits images to this origin or embedded data. You can inspect the small <a href="https://github.com/JaydenYoonZK/wp-config-doctor/blob/main/docs/config.js">engine</a> or use the tool locally. You can also redact the four <code>DB_</code> lines; the remaining checks still work.</p>
+    <div class="why-split">
+      <div>
+        <p>wp-config.php contains your database password, so where you paste it matters. This published build is a static page. The audit runs in your browser, stores nothing, and does not send the pasted text anywhere. Its Content Security Policy blocks connections and limits images to this origin or embedded data. You can inspect the small <a href="https://github.com/JaydenYoonZK/wp-config-doctor/blob/main/docs/config.js">engine</a> or use the tool locally. You can also redact the four <code>DB_</code> lines; the remaining checks still work.</p>
+      </div>
+      <svg class="why-art" viewBox="16 22 268 212" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+        <path d="M40 40 L150 40 L170 60 L170 210 L40 210 Z" fill="var(--panel)" stroke="var(--line-strong)" stroke-width="2"/>
+        <path d="M150 40 L150 60 L170 60" fill="none" stroke="var(--line-strong)" stroke-width="2"/>
+        <g fill="var(--line)" >
+          <rect x="58" y="76" width="76" height="9" rx="4.5"/>
+          <rect x="58" y="98" width="94" height="9" rx="4.5"/>
+          <rect x="58" y="120" width="64" height="9" rx="4.5"/>
+          <rect x="58" y="142" width="86" height="9" rx="4.5"/>
+        </g>
+        <circle cx="212" cy="150" r="56" fill="none" stroke="var(--accent)" stroke-width="2">
+          <animate attributeName="opacity" values="0;0.5;0" dur="3.2s" repeatCount="indefinite"/>
+        </circle>
+        <path d="M212 104 C226 114 240 118 252 119 C252 158 240 184 212 198 C184 184 172 158 172 119 C184 118 198 114 212 104 Z" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M192 150 L206 165 L233 132" fill="none" stroke="var(--accent)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+        <g fill="var(--accent)">
+          <path d="M254 40 L257 48 L265 51 L257 54 L254 62 L251 54 L243 51 L251 48 Z">
+            <animate attributeName="opacity" values="0.2;1;0.2" dur="3.6s" repeatCount="indefinite"/>
+          </path>
+          <circle cx="30" cy="176" r="3">
+            <animate attributeName="opacity" values="0.9;0.2;0.9" dur="3.1s" repeatCount="indefinite"/>
+          </circle>
+        </g>
+      </svg>
+    </div>
+
+    
 
     <h2 id="faq">💬 Questions people ask</h2>
-    <h3>Should I really change the table prefix?</h3>
-    <p>On a new install, yes, pick something non-default. On a live site, changing it means renaming database tables and updating references, which is risky to do casually. The audit flags <code>wp_</code> as low severity for exactly this reason: it is obscurity, not a real defense, so do not break a working site chasing it.</p>
-    <h3>How often should I rotate salts?</h3>
-    <p>Rotate them when you suspect a compromise or need to invalidate every logged-in session. Routine calendar-based rotation is not required. Changing the salts signs everyone out immediately.</p>
-    <h3>Does a high score mean my site is secure?</h3>
-    <p>No. This audits one file. Real security also depends on updates, strong passwords, hosting, plugins, and more. A clean wp-config.php removes a set of common, avoidable mistakes; it is a floor, not a ceiling.</p>
-    <h3>Can I use the audit rules in my own tooling?</h3>
-    <p>Yes. <code>docs/config.js</code> is a dependency-free ES module exposing <code>parseConfig</code>, <code>audit</code>, and <code>generateSalts</code>. MIT licensed.</p>
-  </div>
+    <div class="faq">
+      <div class="faq-item">
+        <h3 class="faq-q"><button type="button" id="faq-b1" aria-expanded="false" aria-controls="faq-a1"><span>Should I really change the table prefix?</span><span class="faq-icon" aria-hidden="true"></span></button></h3>
+        <div class="faq-a" id="faq-a1" role="region" aria-labelledby="faq-b1">
+          <div class="faq-a-inner"><p>On a new install, yes, pick something non-default. On a live site, changing it means renaming database tables and updating references, which is risky to do casually. The audit flags <code>wp_</code> as low severity for exactly this reason: it is obscurity, not a real defense, so do not break a working site chasing it.</p></div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <h3 class="faq-q"><button type="button" id="faq-b2" aria-expanded="false" aria-controls="faq-a2"><span>How often should I rotate salts?</span><span class="faq-icon" aria-hidden="true"></span></button></h3>
+        <div class="faq-a" id="faq-a2" role="region" aria-labelledby="faq-b2">
+          <div class="faq-a-inner"><p>Rotate them when you suspect a compromise or need to invalidate every logged-in session. Routine calendar-based rotation is not required. Changing the salts signs everyone out immediately.</p></div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <h3 class="faq-q"><button type="button" id="faq-b3" aria-expanded="false" aria-controls="faq-a3"><span>Does a high score mean my site is secure?</span><span class="faq-icon" aria-hidden="true"></span></button></h3>
+        <div class="faq-a" id="faq-a3" role="region" aria-labelledby="faq-b3">
+          <div class="faq-a-inner"><p>No. This audits one file. Real security also depends on updates, strong passwords, hosting, plugins, and more. A clean wp-config.php removes a set of common, avoidable mistakes; it is a floor, not a ceiling.</p></div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <h3 class="faq-q"><button type="button" id="faq-b4" aria-expanded="false" aria-controls="faq-a4"><span>Can I use the audit rules in my own tooling?</span><span class="faq-icon" aria-hidden="true"></span></button></h3>
+        <div class="faq-a" id="faq-a4" role="region" aria-labelledby="faq-b4">
+          <div class="faq-a-inner"><p>Yes. <code>docs/config.js</code> is a dependency-free ES module exposing <code>parseConfig</code>, <code>audit</code>, and <code>generateSalts</code>. MIT licensed.</p></div>
+        </div>
+      </div>
+    </div>
+
+    </div>
 </main>
 
 <footer>
@@ -221,6 +269,6 @@
 </footer>
 
 <button id="to-top" class="to-top" type="button" aria-label="Back to top">&#8593;</button>
-<script type="module" src="app.js?v=1.4.22"></script>
+<script type="module" src="app.js?v=1.4.23"></script>
 </body>
 </html>

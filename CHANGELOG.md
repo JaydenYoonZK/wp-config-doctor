@@ -3,6 +3,17 @@
 All notable changes to this project are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.4.23] - 2026-07-12
+
+### Added
+
+- The FAQ is a set of full-width accordions now, each question carrying a plus that turns into a close mark as the answer unfolds, with the state exposed to keyboards and screen readers.
+- The page carries a shield-and-config scene beside the privacy boundary section and a two-column checks list, so sections close at the full width instead of trailing off empty on the right.
+
+### Changed
+
+- Result chips grow to close each row, the seam between the tool and the prose is tighter, and loose paragraphs run the full section width.
+
 ## [1.4.22] - 2026-07-12
 
 ### Fixed
@@ -433,6 +444,7 @@ First stable release.
 - Dependency-free ES module engine (docs/config.js) with 10 Node tests.
 - Browser UI in the shared suite design with light and dark themes and a ?demo deep link.
 
+[1.4.23]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.23
 [1.4.22]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.22
 [1.4.21]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.21
 [1.4.20]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.20
