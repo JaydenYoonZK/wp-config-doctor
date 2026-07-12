@@ -3,6 +3,12 @@
 All notable changes to this project are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.4.28] - 2026-07-12
+
+### Added
+
+- A purpose-built 1280x640 social preview card, and the page's link-sharing metadata now points at it with honest dimensions.
+
 ## [1.4.27] - 2026-07-12
 
 ### Changed
@@ -472,6 +478,7 @@ First stable release.
 - Dependency-free ES module engine (docs/config.js) with 10 Node tests.
 - Browser UI in the shared suite design with light and dark themes and a ?demo deep link.
 
+[1.4.28]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.28
 [1.4.27]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.27
 [1.4.26]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.26
 [1.4.25]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.25
