@@ -1,5 +1,5 @@
 /*! WP Config Doctor | Copyright (c) 2026 Jayden Yoon ZK | MIT License | https://github.com/JaydenYoonZK/wp-config-doctor */
-import { audit, generateSalts } from "./config.js?v=1.4.19";
+import { audit, generateSalts } from "./config.js?v=1.4.20";
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
@@ -413,3 +413,7 @@ console.info(
   "background:#abcf37;color:#101400;font-weight:700;padding:2px 8px;border-radius:999px",
   "color:inherit"
 );
+
+// The footer's copyright year keeps itself current.
+const yearEl = document.getElementById("copyright-year");
+if (yearEl) yearEl.textContent = String(new Date().getFullYear());
