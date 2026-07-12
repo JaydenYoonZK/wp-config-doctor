@@ -3,6 +3,16 @@
 All notable changes to this project are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.4.24] - 2026-07-12
+
+### Added
+
+- A "Why I built this" story closes the page, paired with the suite's sprout scene and linked from the navigation, matching the sibling tools.
+
+### Changed
+
+- The FAQ heading reads "Frequently asked questions" now.
+
 ## [1.4.23] - 2026-07-12
 
 ### Added
@@ -444,6 +454,7 @@ First stable release.
 - Dependency-free ES module engine (docs/config.js) with 10 Node tests.
 - Browser UI in the shared suite design with light and dark themes and a ?demo deep link.
 
+[1.4.24]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.24
 [1.4.23]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.23
 [1.4.22]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.22
 [1.4.21]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.21
