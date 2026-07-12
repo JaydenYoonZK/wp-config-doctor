@@ -1,4 +1,5 @@
-import { audit, generateSalts } from "./config.js?v=1.4.18";
+/*! WP Config Doctor | Copyright (c) 2026 Jayden Yoon ZK | MIT License | https://github.com/JaydenYoonZK/wp-config-doctor */
+import { audit, generateSalts } from "./config.js?v=1.4.19";
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
@@ -406,3 +407,9 @@ if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("sw.js").catch(() => { /* offline support is optional */ });
   });
 }
+
+console.info(
+  "%cBuilt by Jayden Yoon ZK%c https://github.com/JaydenYoonZK",
+  "background:#abcf37;color:#101400;font-weight:700;padding:2px 8px;border-radius:999px",
+  "color:inherit"
+);

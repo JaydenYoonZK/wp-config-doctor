@@ -1,3 +1,4 @@
+/*! WP Config Doctor | Copyright (c) 2026 Jayden Yoon ZK | MIT License | https://github.com/JaydenYoonZK/wp-config-doctor */
 /**
  * wp-config-doctor engine
  *
