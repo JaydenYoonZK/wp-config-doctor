@@ -3,6 +3,12 @@
 All notable changes to this project are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.4.31] - 2026-07-15
+
+### Added
+
+- A sponsor heart in the navigation, beside the theme toggle: quiet at rest, GitHub sponsor pink on hover, with the toggle's own downward tooltip and arrow, linking to the GitHub Sponsors profile. On the 404 page too.
+
 ## [1.4.30] - 2026-07-12
 
 ### Fixed
@@ -490,6 +496,7 @@ First stable release.
 - Dependency-free ES module engine (docs/config.js) with 10 Node tests.
 - Browser UI in the shared suite design with light and dark themes and a ?demo deep link.
 
+[1.4.31]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.31
 [1.4.30]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.30
 [1.4.29]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.29
 [1.4.28]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.28
