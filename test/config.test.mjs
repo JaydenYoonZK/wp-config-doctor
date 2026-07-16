@@ -359,3 +359,36 @@ test("parser rejects non-string and oversized input", () => {
   assert.throws(() => parseConfig(null), /must be a string/);
   assert.throws(() => parseConfig("x".repeat(1024 * 1024 + 1)), /exceeds 1 MiB/);
 });
+
+
+test("a /*/ ... */ block is one comment, so commented-out defines stay inactive", () => {
+  const src = `<?php\n/*/\ndefine("DISALLOW_FILE_EDIT", true);\n*/\ndefine("WP_DEBUG", false);\ndefine("DB_NAME","x");`;
+  const cfg = parseConfig(src);
+  assert.equal(cfg.defines.has("DISALLOW_FILE_EDIT"), false, "DISALLOW_FILE_EDIT is commented out");
+  const ids = audit(src).findings.map(f => f.id);
+  assert.ok(!ids.includes("file-edit-ok"), "must not report a false 'file editing disabled' pass");
+  // a normal block comment and a real define after it still behave
+  assert.equal(parseConfig(`<?php\n/* define("WP_DEBUG", true); */\ndefine("DB_NAME","x");`).defines.has("WP_DEBUG"), false);
+  assert.equal(parseConfig(`<?php\n/* x */\ndefine("WP_DEBUG", true);`).defines.has("WP_DEBUG"), true);
+});
+
+test("a PHP 7.3+ flexible heredoc close does not swallow later defines", () => {
+  const src = `<?php\ndefine("X", <<<END\nhi\nEND);\ndefine("DISALLOW_FILE_EDIT", true);`;
+  const cfg = parseConfig(src);
+  assert.ok(cfg.defines.has("X"));
+  assert.ok(cfg.defines.has("DISALLOW_FILE_EDIT"), "the define after the heredoc must survive");
+  // a label prefix inside the body ("ENDING") must not act as the close
+  const src2 = `<?php\ndefine("X", <<<END\nENDING is fine\nEND);\ndefine("Y", true);`;
+  const cfg2 = parseConfig(src2);
+  assert.ok(cfg2.defines.has("X") && cfg2.defines.has("Y"));
+});
+
+test("define() with a third case-insensitivity argument reads the value, not the flag", () => {
+  const edit = parseConfig(`<?php\ndefine("DISALLOW_FILE_EDIT", true, true);`).defines.get("DISALLOW_FILE_EDIT");
+  assert.equal(edit.value, true);
+  assert.equal(edit.type, "bool");
+  const ids = audit(`<?php\ndefine("DISALLOW_FILE_EDIT", true, true);\ndefine("DB_NAME","x");`).findings.map(f => f.id);
+  assert.ok(!ids.includes("file-edit-dynamic"), "a 3-arg hardened define is not a dynamic expression");
+  const salt = parseConfig(`<?php\ndefine("AUTH_KEY", "realStrongSalt64charsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", true);`).defines.get("AUTH_KEY");
+  assert.equal(salt.type, "string");
+});

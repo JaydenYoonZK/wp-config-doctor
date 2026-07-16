@@ -81,7 +81,11 @@ function scanPhp(src) {
       if (opener) {
         const label = opener[2].replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
         const rest = src.slice(i + opener[0].length);
-        const close = new RegExp(`^[ \\t]*${label};?[ \\t]*(?:\\r?\\n|$)`, "m").exec(rest);
+        // PHP 7.3+ allows a flexible closing marker: the label may be indented
+        // and immediately followed by ), ,, ., ;, etc. Match the label when it
+        // is not followed by another identifier character (so "ENDING" is not a
+        // close of "END"), and blank only up to the marker; the rest is code.
+        const close = new RegExp(`^[ \\t]*${label}(?![A-Za-z0-9_])`, "m").exec(rest);
         const end = close ? i + opener[0].length + close.index + close[0].length : n;
         while (i < end) { clean += src[i]; code += blank(src[i]); i++; }
         continue;
@@ -92,6 +96,10 @@ function scanPhp(src) {
       continue;
     }
     if (c === "/" && src[i + 1] === "*") {
+      // Consume the opening "/*" first, so the terminator search does not pair
+      // the opener's own "*" with the next "/" and read "/*/" as a whole comment
+      // (in PHP "/*/ ... */" is a single comment).
+      clean += "  "; code += "  "; i += 2;
       while (i < n && !(src[i] === "*" && src[i + 1] === "/")) { clean += blank(src[i]); code += blank(src[i]); i++; }
       if (i < n) { clean += "  "; code += "  "; i += 2; }
       continue;
@@ -190,7 +198,12 @@ export function parseConfig(rawSrc) {
     const valueStart = i + 1;
     const close = findClosingParen(code, valueStart);
     if (close === -1) continue;
-    const parsed = parseExpression(rawSrc, clean, code, valueStart, close);
+    // define() may carry a third case-insensitivity argument. Parse only the
+    // value (the first argument after the name), not the trailing flag, so a
+    // hardened `define('DISALLOW_FILE_EDIT', true, true)` is read as true, not
+    // the expression "true, true".
+    const args = splitCallArguments(code, valueStart, close);
+    const parsed = parseExpression(rawSrc, clean, code, ...args[0]);
     const name = namePart.value;
     if (defines.has(name)) duplicateDefines.add(name);
     else defines.set(name, { ...parsed, line });

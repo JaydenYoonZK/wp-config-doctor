@@ -5,7 +5,6 @@ Paste your `wp-config.php` and get a plain-language security and performance aud
 <p>
   <a href="https://jaydenyoonzk.github.io/wp-config-doctor/"><img src="https://img.shields.io/badge/Live%20tool-open-abcf37?style=for-the-badge&logo=githubpages&logoColor=black" alt="Open the live tool"></a>
   <a href="https://github.com/JaydenYoonZK/wp-config-doctor/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/JaydenYoonZK/wp-config-doctor/ci.yml?style=for-the-badge&label=tests" alt="CI status"></a>
-  <a href="https://github.com/JaydenYoonZK/wp-config-doctor"><img src="https://img.shields.io/github/stars/JaydenYoonZK/wp-config-doctor?style=for-the-badge&logo=github" alt="GitHub stars"></a>
   <a href="LICENSE"><img src="https://img.shields.io/github/license/JaydenYoonZK/wp-config-doctor?style=for-the-badge" alt="MIT License"></a>
 </p>
 

@@ -3,6 +3,25 @@
 All notable changes to this project are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.4.32] - 2026-07-17
+
+A deep quality pass from an adversarial pre-launch review of the parser, the page, and the docs.
+
+### Fixed
+
+- The comment scanner no longer reads `/*/` as a whole comment. A `/*/ ... */` block (and the toggle-comment idiom) is a single PHP comment, so defines inside it are now correctly treated as inactive. Before, the tool could report a false "in-dashboard file editing is disabled" pass on a wp-config.php where that line was commented out.
+- A modern PHP 7.3+ heredoc or nowdoc closing marker (indented, or followed by `)`, `,`, `.`) no longer swallows every define after it. Constants that follow a heredoc value are parsed again, so the audit stops raising a cascade of false alarms.
+- A `define()` with a third case-insensitivity argument now reads the value, not the trailing flag. A hardened `define('DISALLOW_FILE_EDIT', true, true)` reads as true instead of an unevaluable expression, so it no longer produces a false alarm.
+- The salt generator's Copy button confirms only when the clipboard write actually succeeds, and selects the text with a manual-copy hint otherwise.
+- The 404 page works at any URL depth: its stylesheet, script, icons, and links are project-absolute, so a missing path two or more segments deep is styled and navigable.
+- `prefers-reduced-motion` now pauses the page's SVG animations, which CSS rules cannot stop.
+- Theme reading and writing survive blocked browser storage, and the page keeps a dark fallback if the boot script cannot run.
+- The hero illustration caption reads "3 issues found" to match its three issue rows and one green pass row.
+
+### Changed
+
+- A `theme-color` meta follows the active theme; PNG and Apple touch icons were added; the stars badge was dropped from the README.
+
 ## [1.4.31] - 2026-07-15
 
 ### Added
@@ -496,6 +515,7 @@ First stable release.
 - Dependency-free ES module engine (docs/config.js) with 10 Node tests.
 - Browser UI in the shared suite design with light and dark themes and a ?demo deep link.
 
+[1.4.32]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.32
 [1.4.31]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.31
 [1.4.30]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.30
 [1.4.29]: https://github.com/JaydenYoonZK/wp-config-doctor/releases/tag/v1.4.29

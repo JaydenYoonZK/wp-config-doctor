@@ -1,5 +1,5 @@
 /*! WP Config Doctor | Copyright (c) 2026 Jayden Yoon ZK | MIT License | https://github.com/JaydenYoonZK/wp-config-doctor */
-import { audit, generateSalts } from "./config.js?v=1.4.31";
+import { audit, generateSalts } from "./config.js?v=1.4.32";
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
@@ -159,9 +159,16 @@ syncControls();
 function newSalts() { $("salt-output").textContent = generateSalts(); }
 $("regen").addEventListener("click", newSalts);
 $("copy-salts").addEventListener("click", async () => {
-  try { await navigator.clipboard.writeText($("salt-output").textContent); } catch { /* ignore */ }
-  const b = $("copy-salts"); b.textContent = "Copied ✓";
-  setTimeout(() => { b.textContent = "Copy"; }, 1500);
+  const b = $("copy-salts");
+  let copied = false;
+  try { await navigator.clipboard.writeText($("salt-output").textContent); copied = true; } catch { /* fall back below */ }
+  if (!copied) {
+    const range = document.createRange();
+    range.selectNodeContents($("salt-output"));
+    const sel = getSelection(); sel.removeAllRanges(); sel.addRange(range);
+  }
+  b.textContent = copied ? "Copied ✓" : "Press \u2318/Ctrl+C";
+  setTimeout(() => { b.textContent = "Copy"; }, copied ? 1500 : 2600);
 });
 newSalts();
 
@@ -184,7 +191,8 @@ themeToggle.addEventListener("click", () => {
     const vt = document.startViewTransition(() => {
       const next = document.documentElement.dataset.theme === "light" ? "dark" : "light";
       document.documentElement.dataset.theme = next;
-      localStorage.setItem("theme", next);
+      document.querySelector('meta[name="theme-color"]')?.setAttribute("content", next === "light" ? "#f6f4ee" : "#0d0c0a");
+      try { localStorage.setItem("theme", next); } catch { /* storage may be blocked */ }
       syncThemeIcon();
     });
     vt.finished.finally(() => document.documentElement.classList.remove("vt-active"));
@@ -195,10 +203,20 @@ themeToggle.addEventListener("click", () => {
   themeFadeTimer = setTimeout(() => document.documentElement.classList.remove("theme-fading"), 500);
   const next = document.documentElement.dataset.theme === "light" ? "dark" : "light";
   document.documentElement.dataset.theme = next;
-  localStorage.setItem("theme", next);
+      document.querySelector('meta[name="theme-color"]')?.setAttribute("content", next === "light" ? "#f6f4ee" : "#0d0c0a");
+  try { localStorage.setItem("theme", next); } catch { /* storage may be blocked */ }
   syncThemeIcon();
 });
 syncThemeIcon();
+
+// SMIL animations are not covered by CSS reduced-motion rules, pause them.
+const svgMotion = matchMedia("(prefers-reduced-motion: reduce)");
+function applyReducedMotion() {
+  if (svgMotion.matches) document.querySelectorAll("svg").forEach((el) => el.pauseAnimations?.());
+  else document.querySelectorAll("svg").forEach((el) => el.unpauseAnimations?.());
+}
+applyReducedMotion();
+svgMotion.addEventListener?.("change", applyReducedMotion);
 
 // Scroll spy: the active menu item is the last section whose heading sits
 // at or above the reading line just below the sticky header. Computed from
