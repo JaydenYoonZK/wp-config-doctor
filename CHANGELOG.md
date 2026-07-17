@@ -5,8 +5,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [1.4.32] - 2026-07-17
 
-A deep quality pass from an adversarial pre-launch review of the parser, the page, and the docs.
-
 ### Fixed
 
 - The comment scanner no longer reads `/*/` as a whole comment. A `/*/ ... */` block (and the toggle-comment idiom) is a single PHP comment, so defines inside it are now correctly treated as inactive. Before, the tool could report a false "in-dashboard file editing is disabled" pass on a wp-config.php where that line was commented out.
@@ -420,11 +418,6 @@ A deep quality pass from an adversarial pre-launch review of the parser, the pag
 ### Added
 
 - Flags `WP_HOME` and `WP_SITEURL` when they are hardcoded to an insecure `http://` address. Pinning either to http forces WordPress to build links and redirects over plain HTTP, which breaks a site served over HTTPS, triggers mixed-content warnings, or causes a redirect loop when the server upgrades http to https. A concatenated value like `'http://' . $host` is left alone, since it is dynamic rather than a fixed insecure address.
-
-### Notes
-
-This release followed a second audit, this time hammering the PHP parser with real-world wp-config patterns: environment-variable passwords (`getenv(...)`, correctly not read as an empty password), double-quoted constant names and table prefixes, several `define()` calls on one line, Windows line endings, multi-line calls, and heredoc values (which no longer corrupt the defines that follow them). All parsed correctly, and the earlier fixes (comment stripping, PHP string truthiness, the `WP_ALLOW_REPAIR` and `WP_DEBUG_LOG` checks, and the score-versus-issues reconciliation) remain in place.
-
 ## [1.2.6] - 2026-07-09
 
 ### Changed
