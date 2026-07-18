@@ -3,6 +3,12 @@
 All notable changes to this project are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.4.33] - 2026-07-18
+
+### Changed
+
+- The link preview declares its image size for cleaner unfurls.
+
 ## [1.4.32] - 2026-07-17
 
 ### Fixed
