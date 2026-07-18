@@ -21,7 +21,7 @@ define( 'DB_USER', 'wpuser' );
 define( 'DB_PASSWORD', 'a-long-random-secret-8f3ac91b' );
 define( 'DB_HOST', 'localhost' );
 define('AUTH_KEY',        'x7)Kd#2p Zq|9aB^mW}oL5!rT8@vN0cE_gH1jS4uY6iP3fD-kR' );
-define('SECURE_AUTH_KEY', 'Q2wE3rT4yU5iO6pA7sD8fG9hJ0kL1zX2cV3bN4mQ5wE6rT7yU8i' );
+define('SECURE_AUTH_KEY', '[REDACTED]' );
 define('LOGGED_IN_KEY',   'aaAA11!!bbBB22@@ccCC33##ddDD44$$eeEE55%%ffFF66^^ggGG' );
 define('NONCE_KEY',       'z9y8x7w6v5u4t3s2r1q0p!o@n#m$l%k^j&i*h(g)f-e_dcbaZZ1' );
 define('AUTH_SALT',       'M1n2B3v4C5x6Z7l8K9j0H!g@F#d\\$S%aP^oI&uY*tR(eW)q, .;:' );
@@ -31,6 +31,7 @@ define('NONCE_SALT',      'QwErTyUiOpAsDfGhJkLzXcVbNm1234567890!@#\\$%^&*()-_=+[
 
 define( 'WP_DEBUG', false );
 define( 'DISALLOW_FILE_EDIT', true );
+define( 'DISALLOW_UNFILTERED_HTML', true );
 define( 'FORCE_SSL_ADMIN', true );
 define( 'WP_MEMORY_LIMIT', '256M' );
 define( 'WP_POST_REVISIONS', 10 );
@@ -203,6 +204,19 @@ test("WP_DEBUG set to a string is flagged (PHP truthiness footgun)", () => {
 test("WP_ALLOW_REPAIR left enabled is flagged", () => {
   const ids = audit(`<?php define('WP_ALLOW_REPAIR', true); define('DB_NAME','x');`).findings.map(f => f.id);
   assert.ok(ids.includes("allow-repair"));
+});
+
+test("DISALLOW_UNFILTERED_HTML unset is flagged, true passes", () => {
+  const missing = audit(`<?php define('DB_NAME','x');`).findings.map(f => f.id);
+  assert.ok(missing.includes("unfiltered-html"));
+  assert.ok(!missing.includes("unfiltered-html-ok"));
+  const set = audit(`<?php define('DISALLOW_UNFILTERED_HTML', true); define('DB_NAME','x');`).findings.map(f => f.id);
+  assert.ok(set.includes("unfiltered-html-ok"));
+  assert.ok(!set.includes("unfiltered-html"));
+  const explicitFalse = audit(`<?php define('DISALLOW_UNFILTERED_HTML', false); define('DB_NAME','x');`).findings.map(f => f.id);
+  assert.ok(explicitFalse.includes("unfiltered-html"));
+  const commented = audit(`<?php /* define('DISALLOW_UNFILTERED_HTML', true); */ define('DB_NAME','x');`).findings.map(f => f.id);
+  assert.ok(commented.includes("unfiltered-html"), "a commented-out define must not count as set");
 });
 
 test("normal boolean WP_DEBUG values are unaffected by the string check", () => {
@@ -389,6 +403,6 @@ test("define() with a third case-insensitivity argument reads the value, not the
   assert.equal(edit.type, "bool");
   const ids = audit(`<?php\ndefine("DISALLOW_FILE_EDIT", true, true);\ndefine("DB_NAME","x");`).findings.map(f => f.id);
   assert.ok(!ids.includes("file-edit-dynamic"), "a 3-arg hardened define is not a dynamic expression");
-  const salt = parseConfig(`<?php\ndefine("AUTH_KEY", "realStrongSalt64charsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", true);`).defines.get("AUTH_KEY");
+  const salt = parseConfig(`<?php\ndefine("AUTH_KEY", "[REDACTED]", true);`).defines.get("AUTH_KEY");
   assert.equal(salt.type, "string");
 });

@@ -424,6 +424,17 @@ export function audit(src) {
         : "DISALLOW_FILE_EDIT is set.");
   }
 
+  /* --- unfiltered html --- */
+  const unfilteredHtml = literalTruth(get("DISALLOW_UNFILTERED_HTML"));
+  if (unfilteredHtml === true) {
+    add("unfiltered-html-ok", "pass", "Unfiltered HTML is disabled for all users",
+      "DISALLOW_UNFILTERED_HTML is set, so KSES filtering applies to every account, including administrators and editors.");
+  } else {
+    add("unfiltered-html", "medium", "Unfiltered HTML is allowed for privileged users",
+      "Without DISALLOW_UNFILTERED_HTML, administrators and editors can publish raw HTML, including script tags, because the unfiltered_html capability bypasses KSES. That turns one compromised admin or editor account into a stored-XSS vector.",
+      "Add define('DISALLOW_UNFILTERED_HTML', true);");
+  }
+
   /* --- ssl admin --- */
   const sslAdmin = literalTruth(get("FORCE_SSL_ADMIN"));
   if (sslAdmin === null && get("FORCE_SSL_ADMIN")) {
@@ -545,7 +556,7 @@ export function audit(src) {
 
 // WordPress-style character set, minus ' and \ so the value is safe inside
 // a single-quoted PHP string without escaping.
-const SALT_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_[]{}<>~`+=,.;:/?|";
+const SALT_CHARS = "[REDACTED]!@#$%^&*()-_[]{}<>~`+=,.;:/?|";
 
 function randomSalt(len, rng) {
   let out = "";
