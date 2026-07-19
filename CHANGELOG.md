@@ -3,6 +3,12 @@
 All notable changes to this project are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.4.38] - 2026-07-19
+
+### Fixed
+
+- The salt generator code box now sits at the same top spacing as the input box, instead of with an extra gap above the keys.
+
 ## [1.4.37] - 2026-07-19
 
 ### Changed
