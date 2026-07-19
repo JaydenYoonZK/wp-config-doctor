@@ -1,5 +1,5 @@
 /*! WP Config Doctor | Copyright (c) 2026 Jayden Yoon ZK | MIT License | https://github.com/JaydenYoonZK/wp-config-doctor */
-import { audit, generateSalts } from "./config.js?v=1.4.35";
+import { audit, generateSalts } from "./config.js?v=1.4.36";
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
