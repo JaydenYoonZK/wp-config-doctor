@@ -3,6 +3,12 @@
 All notable changes to this project are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.4.37] - 2026-07-19
+
+### Changed
+
+- The salt Copy button now sits in the toolbar next to Generate a new set, instead of on a row above the keys.
+
 ## [1.4.36] - 2026-07-19
 
 ### Changed
