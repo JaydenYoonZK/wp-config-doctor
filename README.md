@@ -67,7 +67,7 @@ const freshSalts = generateSalts();   // eight define() lines
 npm test
 ```
 
-33 tests cover lexical parsing, comments, heredocs, PHP strings and escapes, nested expressions, duplicate definitions, dynamic values, environment-aware debug checks, salts, URL and repair-page findings, input limits, and unbiased salt generation. Coverage is measured with `npm run test:coverage`.
+36 tests cover lexical parsing, comments, heredocs, PHP strings and escapes, nested expressions, duplicate definitions, dynamic values, environment-aware debug checks, salts, URL and repair-page findings, input limits, and unbiased salt generation. Coverage is measured with `npm run test:coverage`.
 
 ## Limits
 
