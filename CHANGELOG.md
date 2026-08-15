@@ -3,6 +3,12 @@
 All notable changes to this project are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.5.11] - 2026-08-16
+
+### Fixed
+
+- The film grain overlay was pinned to the screen, and on iOS Safari a full-bleed pinned layer makes the browser draw scrolled page content into the status bar strip around the clock. The grain now anchors to the page itself and scrolls with it, so the strip stays clean. It still covers the whole document and the texture looks exactly the same.
+
 ## [1.5.10] - 2026-08-16
 
 ### Fixed
