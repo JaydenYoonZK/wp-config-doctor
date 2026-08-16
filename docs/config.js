@@ -424,6 +424,15 @@ export function audit(src) {
         : "DISALLOW_FILE_EDIT is set.");
   }
 
+  /* --- unfiltered html --- */
+  if (truthy(get("DISALLOW_UNFILTERED_HTML"))) {
+    add("unfiltered-html-ok", "pass", "Unfiltered HTML is disallowed", "DISALLOW_UNFILTERED_HTML is set.");
+  } else {
+    add("unfiltered-html", "medium", "Unfiltered HTML/script is allowed in post content",
+      "Without DISALLOW_UNFILTERED_HTML, authors and admins can post raw HTML/script in content, which is a stored-XSS vector if any of those accounts is compromised.",
+      "Add define('DISALLOW_UNFILTERED_HTML', true);");
+  }
+
   /* --- ssl admin --- */
   const sslAdmin = literalTruth(get("FORCE_SSL_ADMIN"));
   if (sslAdmin === null && get("FORCE_SSL_ADMIN")) {
