@@ -3,6 +3,12 @@
 All notable changes to this project are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.5.13] - 2026-08-16
+
+### Changed
+
+- The 袁正凯 seal is a proper square chop now, and its characters and frame are cut clean through the chartreuse field, so whatever the bar shows behind it fills the strokes in light and dark mode alike. The brand name beside it grew a touch to sit level with the chop.
+
 ## [1.5.12] - 2026-08-16
 
 ### Added
